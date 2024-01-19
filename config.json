@@ -1,0 +1,23 @@
+{
+    "Semantic": {
+        "CatalogChecker": {
+
+        }, 
+        "EntitiyChecker": {
+
+        }
+    },
+    "Geometry": {
+        "PositionChecker": {
+            
+        }
+    },
+    "Schema": {
+        "ConventionChecker": {
+
+        },
+        "SchemaChecker": {
+
+        }
+    }
+}
