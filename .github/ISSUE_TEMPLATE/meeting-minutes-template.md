@@ -2,7 +2,7 @@
 name: Meeting minutes template
 about: Meeting minutes template
 title: ''
-labels: ''
+labels: isType:MeetingMinutes
 assignees: ''
 
 ---
