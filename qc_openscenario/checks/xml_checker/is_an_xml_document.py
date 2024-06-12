@@ -38,7 +38,7 @@ def check_rule(input_xml_file_path, result) -> bool:
         emanating_entity="asam.net",
         standard="xosc",
         definition_setting="0.0",
-        rule_full_name="is_an_xml_document",
+        rule_full_name="xml.is_an_xml_document",
     )
 
     valid_result, error_location = is_valid_xml(input_xml_file_path)
