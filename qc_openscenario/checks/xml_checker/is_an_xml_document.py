@@ -41,9 +41,9 @@ def check_rule(input_xml_file_path, result) -> bool:
         rule_full_name="xml.is_an_xml_document",
     )
 
-    valid_result, error_location = is_valid_xml(input_xml_file_path)
+    is_valid, error_location = is_valid_xml(input_xml_file_path)
 
-    if not valid_result:
+    if not is_valid:
 
         issue_id = result.register_issue(
             checker_bundle_name=constants.BUNDLE_NAME,
