@@ -37,7 +37,7 @@ def check_rule(input_xml_file_path, result) -> bool:
         checker_id=xml_constants.CHECKER_ID,
         emanating_entity="asam.net",
         standard="xosc",
-        definition_setting="0.0",
+        definition_setting="1.0.0",
         rule_full_name="xml.is_an_xml_document",
     )
 
