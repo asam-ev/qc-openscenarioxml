@@ -10,7 +10,7 @@ from qc_baselib import Configuration, Result, IssueSeverity
 from qc_openscenario import constants
 from qc_openscenario.checks import utils, models
 
-from qc_openscenario.checks.xml_checker import xml_constants
+from qc_openscenario.checks.basic_checker import basic_constants
 
 
 def _is_xml_doc(file_path: str) -> tuple:
@@ -34,7 +34,7 @@ def check_rule(input_xml_file_path: str, result: Result) -> bool:
 
     rule_uid = result.register_rule(
         checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=xml_constants.CHECKER_ID,
+        checker_id=basic_constants.CHECKER_ID,
         emanating_entity="asam.net",
         standard="xosc",
         definition_setting="1.0.0",
@@ -47,7 +47,7 @@ def check_rule(input_xml_file_path: str, result: Result) -> bool:
 
         issue_id = result.register_issue(
             checker_bundle_name=constants.BUNDLE_NAME,
-            checker_id=xml_constants.CHECKER_ID,
+            checker_id=basic_constants.CHECKER_ID,
             description="Issue flagging when input file is not a valid xml document",
             level=IssueSeverity.ERROR,
             rule_uid=rule_uid,
@@ -55,7 +55,7 @@ def check_rule(input_xml_file_path: str, result: Result) -> bool:
 
         result.add_file_location(
             checker_bundle_name=constants.BUNDLE_NAME,
-            checker_id=xml_constants.CHECKER_ID,
+            checker_id=basic_constants.CHECKER_ID,
             issue_id=issue_id,
             row=error_location[0],
             column=error_location[1],

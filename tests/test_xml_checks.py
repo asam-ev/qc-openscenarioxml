@@ -8,6 +8,7 @@ import main
 
 from qc_openscenario import constants, checks
 from qc_openscenario.checks.xml_checker import xml_constants
+from qc_openscenario.checks.basic_checker import basic_constants
 
 from qc_baselib import Configuration, Result, IssueSeverity, Result
 
@@ -66,7 +67,7 @@ def test_is_an_xml_document_positive(
 
     checker_result = result.get_checker_result(
         checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=xml_constants.CHECKER_ID,
+        checker_id=basic_constants.CHECKER_ID,
     )
     assert len(get_issues_by_rule_name(checker_result, "xml.is_an_xml_document")) == 0
 
@@ -89,7 +90,7 @@ def test_is_an_xml_document_negative(
 
     checker_result = result.get_checker_result(
         checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=xml_constants.CHECKER_ID,
+        checker_id=basic_constants.CHECKER_ID,
     )
     xml_doc_issues = get_issues_by_rule_name(checker_result, "xml.is_an_xml_document")
     assert len(xml_doc_issues) == 1

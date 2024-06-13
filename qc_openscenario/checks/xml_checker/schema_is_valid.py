@@ -62,10 +62,6 @@ def check_rule(checker_data: models.CheckerData) -> None:
 
     schema_files_dict = schema_files.SCHEMA_FILES
 
-    if schema_version not in schema_files_dict:
-        logging.info(f"- Version {schema_version} unsupported. Skipping check")
-        return
-
     xsd_file = schema_files_dict[schema_version]
     xsd_file_path = os.path.join("qc_openscenario", "schema", xsd_file)
 
