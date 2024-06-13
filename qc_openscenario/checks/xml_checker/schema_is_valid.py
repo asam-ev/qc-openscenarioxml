@@ -48,10 +48,8 @@ def check_rule(checker_data: models.CheckerData) -> None:
 
     schema_version = checker_data.schema_version
     if schema_version is None:
-        logging.info(
-            "- No schema version found in input file. Using xsd schema default 1.3.0"
-        )
-        schema_version = "1.3.0"
+        logging.info(f"- Version not found in the file. Skipping check")
+        return
 
     rule_uid = checker_data.result.register_rule(
         checker_bundle_name=constants.BUNDLE_NAME,
@@ -65,7 +63,7 @@ def check_rule(checker_data: models.CheckerData) -> None:
     schema_files_dict = schema_files.SCHEMA_FILES
 
     if schema_version not in schema_files_dict:
-        logging.info(f"Version {schema_version} unsupported. Skipping check")
+        logging.info(f"- Version {schema_version} unsupported. Skipping check")
         return
 
     xsd_file = schema_files_dict[schema_version]

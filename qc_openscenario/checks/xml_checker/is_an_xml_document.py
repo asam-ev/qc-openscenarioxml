@@ -18,7 +18,7 @@ def is_xml_doc(file_path):
         with open(file_path, "rb") as file:
             xml_content = file.read()
             etree.fromstring(xml_content)
-            logging.info("- The XML is valid.")
+            logging.info("- It is an xml document.")
         return True, None
     except etree.XMLSyntaxError as e:
         logging.error(f"- Error: {e}")

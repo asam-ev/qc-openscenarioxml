@@ -130,5 +130,49 @@ def test_schema_is_valid_negative(
         checker_bundle_name=constants.BUNDLE_NAME,
         checker_id=xml_constants.CHECKER_ID,
     )
+    assert len(checker_result.issues) == 0
+    cleanup_files()
+
+
+def test_unsupported_schema_version(
+    monkeypatch,
+) -> None:
+    base_path = "tests/data/schema_is_valid/"
+    target_file_name = f"test_ramp_v09.xosc"
+    target_file_path = os.path.join(base_path, target_file_name)
+
+    create_test_config(target_file_path)
+
+    launch_main(monkeypatch)
+
+    result = Result()
+    result.load_from_file(REPORT_FILE_PATH)
+
+    checker_result = result.get_checker_result(
+        checker_bundle_name=constants.BUNDLE_NAME,
+        checker_id=xml_constants.CHECKER_ID,
+    )
+    assert len(checker_result.issues) == 0
+    cleanup_files()
+
+
+def test_invalid_schema(
+    monkeypatch,
+) -> None:
+    base_path = "tests/data/schema_is_valid/"
+    target_file_name = f"invalid_schema.xml"
+    target_file_path = os.path.join(base_path, target_file_name)
+
+    create_test_config(target_file_path)
+
+    launch_main(monkeypatch)
+
+    result = Result()
+    result.load_from_file(REPORT_FILE_PATH)
+
+    checker_result = result.get_checker_result(
+        checker_bundle_name=constants.BUNDLE_NAME,
+        checker_id=xml_constants.CHECKER_ID,
+    )
     assert len(checker_result.issues) == 1
     cleanup_files()
