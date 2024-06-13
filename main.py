@@ -1,10 +1,12 @@
 import argparse
 import logging
+from datetime import datetime
 
 from qc_baselib import Configuration, Result
 
 from qc_openscenario import constants
-from qc_openscenario.checks.xml_checker import xml_checker
+from qc_openscenario.checks.schema_checker import schema_checker
+from qc_openscenario.checks.basic_checker import basic_checker
 
 logging.basicConfig(format="%(asctime)s - %(message)s", level=logging.INFO)
 
@@ -36,14 +38,18 @@ def main():
         result = Result()
         result.register_checker_bundle(
             name=constants.BUNDLE_NAME,
-            build_date="2024-06-05",
-            description="OpenDrive checker bundle",
+            build_date=datetime.today().strftime("%Y-%m-%d"),
+            description="OpenScenario checker bundle",
             version=constants.BUNDLE_VERSION,
             summary="",
         )
         result.set_result_version(version=constants.BUNDLE_VERSION)
 
-        xml_checker.run_checks(config=config, result=result)
+        # 1. Run basic checks
+        checker_data = basic_checker.run_checks(config=config, result=result)
+
+        # 2. Run xml checks
+        schema_checker.run_checks(checker_data)
 
         result.write_to_file(
             config.get_checker_bundle_param(
