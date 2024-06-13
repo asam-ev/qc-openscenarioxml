@@ -13,16 +13,16 @@ from qc_openscenario.checks import utils, models
 from qc_openscenario.checks.xml_checker import xml_constants
 
 
-def is_valid_xml(file_path):
+def is_xml_doc(file_path):
     try:
         with open(file_path, "rb") as file:
             xml_content = file.read()
             etree.fromstring(xml_content)
-            print("The XML is valid.")
+            logging.info("- The XML is valid.")
         return True, None
     except etree.XMLSyntaxError as e:
-        print(f"Error: {e}")
-        print(f"Error occurred at line {e.lineno}, column {e.offset}")
+        logging.error(f"- Error: {e}")
+        logging.error(f"- Error occurred at line {e.lineno}, column {e.offset}")
         return False, (e.lineno, e.offset)
 
 
@@ -41,7 +41,7 @@ def check_rule(input_xml_file_path, result) -> bool:
         rule_full_name="xml.is_an_xml_document",
     )
 
-    is_valid, error_location = is_valid_xml(input_xml_file_path)
+    is_valid, error_location = is_xml_doc(input_xml_file_path)
 
     if not is_valid:
 

@@ -88,3 +88,47 @@ def test_is_an_xml_document_negative(
     )
     assert len(checker_result.issues) == 1
     cleanup_files()
+
+
+def test_schema_is_valid_positive(
+    monkeypatch,
+) -> None:
+    base_path = "tests/data/schema_is_valid/"
+    target_file_name = f"xml.schema_is_valid.positive.xml"
+    target_file_path = os.path.join(base_path, target_file_name)
+
+    create_test_config(target_file_path)
+
+    launch_main(monkeypatch)
+
+    result = Result()
+    result.load_from_file(REPORT_FILE_PATH)
+
+    checker_result = result.get_checker_result(
+        checker_bundle_name=constants.BUNDLE_NAME,
+        checker_id=xml_constants.CHECKER_ID,
+    )
+    assert len(checker_result.issues) == 0
+    cleanup_files()
+
+
+def test_schema_is_valid_negative(
+    monkeypatch,
+) -> None:
+    base_path = "tests/data/schema_is_valid/"
+    target_file_name = f"xml.schema_is_valid.negative.xml"
+    target_file_path = os.path.join(base_path, target_file_name)
+
+    create_test_config(target_file_path)
+
+    launch_main(monkeypatch)
+
+    result = Result()
+    result.load_from_file(REPORT_FILE_PATH)
+
+    checker_result = result.get_checker_result(
+        checker_bundle_name=constants.BUNDLE_NAME,
+        checker_id=xml_constants.CHECKER_ID,
+    )
+    assert len(checker_result.issues) == 1
+    cleanup_files()
