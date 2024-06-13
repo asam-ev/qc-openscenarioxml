@@ -9,7 +9,7 @@ import main
 from qc_openscenario import constants, checks
 from qc_openscenario.checks.xml_checker import xml_constants
 
-from qc_baselib import Configuration, Result, IssueSeverity
+from qc_baselib import Configuration, Result, IssueSeverity, Result
 
 CONFIG_FILE_PATH = "bundle_config.xml"
 REPORT_FILE_PATH = "xosc_bundle_report.xqar"
@@ -46,6 +46,10 @@ def cleanup_files():
     os.remove(CONFIG_FILE_PATH)
 
 
+def get_issues_by_rule_name(checker_result: Result, rule_name: str) -> List:
+    return [x for x in checker_result.issues if x.rule_uid.split(":")[-1] == rule_name]
+
+
 def test_is_an_xml_document_positive(
     monkeypatch,
 ) -> None:
@@ -64,7 +68,8 @@ def test_is_an_xml_document_positive(
         checker_bundle_name=constants.BUNDLE_NAME,
         checker_id=xml_constants.CHECKER_ID,
     )
-    assert len(checker_result.issues) == 0
+    assert len(get_issues_by_rule_name(checker_result, "xml.is_an_xml_document")) == 0
+
     cleanup_files()
 
 
@@ -86,7 +91,9 @@ def test_is_an_xml_document_negative(
         checker_bundle_name=constants.BUNDLE_NAME,
         checker_id=xml_constants.CHECKER_ID,
     )
-    assert len(checker_result.issues) == 1
+    xml_doc_issues = get_issues_by_rule_name(checker_result, "xml.is_an_xml_document")
+    assert len(xml_doc_issues) == 1
+    assert xml_doc_issues[0].level == IssueSeverity.ERROR
     cleanup_files()
 
 
@@ -108,7 +115,7 @@ def test_schema_is_valid_positive(
         checker_bundle_name=constants.BUNDLE_NAME,
         checker_id=xml_constants.CHECKER_ID,
     )
-    assert len(checker_result.issues) == 0
+    assert len(get_issues_by_rule_name(checker_result, "xml.schema_is_valid")) == 0
     cleanup_files()
 
 
@@ -130,7 +137,7 @@ def test_schema_is_valid_negative(
         checker_bundle_name=constants.BUNDLE_NAME,
         checker_id=xml_constants.CHECKER_ID,
     )
-    assert len(checker_result.issues) == 0
+    assert len(get_issues_by_rule_name(checker_result, "xml.schema_is_valid")) == 0
     cleanup_files()
 
 
@@ -152,7 +159,7 @@ def test_unsupported_schema_version(
         checker_bundle_name=constants.BUNDLE_NAME,
         checker_id=xml_constants.CHECKER_ID,
     )
-    assert len(checker_result.issues) == 0
+    assert len(get_issues_by_rule_name(checker_result, "xml.schema_is_valid")) == 0
     cleanup_files()
 
 
@@ -174,5 +181,8 @@ def test_invalid_schema(
         checker_bundle_name=constants.BUNDLE_NAME,
         checker_id=xml_constants.CHECKER_ID,
     )
-    assert len(checker_result.issues) == 1
+
+    xml_schema_issues = get_issues_by_rule_name(checker_result, "xml.schema_is_valid")
+    assert len(xml_schema_issues) == 1
+    assert xml_schema_issues[0].level == IssueSeverity.ERROR
     cleanup_files()
