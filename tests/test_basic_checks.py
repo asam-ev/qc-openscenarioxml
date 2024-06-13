@@ -25,9 +25,7 @@ def test_is_an_xml_document_positive(
         checker_id=basic_constants.CHECKER_ID,
     )
     assert (
-        len(
-            test_utils.get_issues_by_rule_name(checker_result, "xml.is_an_xml_document")
-        )
+        len(result.get_issues_by_rule_id("asam.net:xosc:1.0.0:xml.is_an_xml_document"))
         == 0
     )
 
@@ -48,12 +46,8 @@ def test_is_an_xml_document_negative(
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
 
-    checker_result = result.get_checker_result(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=basic_constants.CHECKER_ID,
-    )
-    xml_doc_issues = test_utils.get_issues_by_rule_name(
-        checker_result, "xml.is_an_xml_document"
+    xml_doc_issues = result.get_issues_by_rule_id(
+        "asam.net:xosc:1.0.0:xml.is_an_xml_document"
     )
     assert len(xml_doc_issues) == 1
     assert xml_doc_issues[0].level == IssueSeverity.ERROR

@@ -56,7 +56,7 @@ def check_rule(checker_data: models.CheckerData) -> None:
         checker_id=schema_constants.CHECKER_ID,
         emanating_entity="asam.net",
         standard="xosc",
-        definition_setting=schema_version,
+        definition_setting="1.0.0",
         rule_full_name="xml.schema_is_valid",
     )
 

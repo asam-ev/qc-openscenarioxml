@@ -40,7 +40,3 @@ def launch_main(monkeypatch):
 def cleanup_files():
     os.remove(REPORT_FILE_PATH)
     os.remove(CONFIG_FILE_PATH)
-
-
-def get_issues_by_rule_name(checker_result: Result, rule_name: str) -> List:
-    return [x for x in checker_result.issues if x.rule_uid.split(":")[-1] == rule_name]

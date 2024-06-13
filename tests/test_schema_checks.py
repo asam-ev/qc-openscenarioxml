@@ -20,14 +20,11 @@ def test_schema_is_valid_positive(
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
 
-    checker_result = result.get_checker_result(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=schema_constants.CHECKER_ID,
-    )
     assert (
-        len(test_utils.get_issues_by_rule_name(checker_result, "xml.schema_is_valid"))
+        len(result.get_issues_by_rule_id("asam.net:xosc:1.0.0:xml.schema_is_valid"))
         == 0
     )
+
     test_utils.cleanup_files()
 
 
@@ -45,12 +42,8 @@ def test_schema_is_valid_negative(
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
 
-    checker_result = result.get_checker_result(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=schema_constants.CHECKER_ID,
-    )
     assert (
-        len(test_utils.get_issues_by_rule_name(checker_result, "xml.schema_is_valid"))
+        len(result.get_issues_by_rule_id("asam.net:xosc:1.0.0:xml.schema_is_valid"))
         == 0
     )
     test_utils.cleanup_files()
@@ -75,7 +68,7 @@ def test_unsupported_schema_version(
         checker_id=schema_constants.CHECKER_ID,
     )
     assert (
-        len(test_utils.get_issues_by_rule_name(checker_result, "xml.schema_is_valid"))
+        len(result.get_issues_by_rule_id("asam.net:xosc:1.0.0:xml.schema_is_valid"))
         == 0
     )
     test_utils.cleanup_files()
@@ -100,8 +93,8 @@ def test_invalid_schema(
         checker_id=schema_constants.CHECKER_ID,
     )
 
-    xml_schema_issues = test_utils.get_issues_by_rule_name(
-        checker_result, "xml.schema_is_valid"
+    xml_schema_issues = result.get_issues_by_rule_id(
+        "asam.net:xosc:1.0.0:xml.schema_is_valid"
     )
     assert len(xml_schema_issues) == 1
     assert xml_schema_issues[0].level == IssueSeverity.ERROR
