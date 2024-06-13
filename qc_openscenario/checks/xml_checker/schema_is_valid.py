@@ -14,7 +14,7 @@ from qc_openscenario.checks import utils, models
 from qc_openscenario.checks.xml_checker import xml_constants
 
 
-def is_valid_xml(xml_tree: etree._ElementTree, schema_file: str) -> bool:
+def _is_schema_compliant(xml_tree: etree._ElementTree, schema_file: str) -> tuple:
     """Check if input xml tree  is valid against the input schema file (.xsd)
 
     Args:
@@ -69,10 +69,11 @@ def check_rule(checker_data: models.CheckerData) -> None:
     xsd_file = schema_files_dict[schema_version]
     xsd_file_path = os.path.join("qc_openscenario", "schema", xsd_file)
 
-    is_valid, errors = is_valid_xml(checker_data.input_file_xml_root, xsd_file_path)
+    is_valid, errors = _is_schema_compliant(
+        checker_data.input_file_xml_root, xsd_file_path
+    )
 
     if not is_valid:
-
         issue_id = checker_data.result.register_issue(
             checker_bundle_name=constants.BUNDLE_NAME,
             checker_id=xml_constants.CHECKER_ID,
