@@ -69,11 +69,11 @@ def check_rule(checker_data: models.CheckerData) -> None:
     xsd_file = schema_files_dict[schema_version]
     xsd_file_path = os.path.join("qc_openscenario", "schema", xsd_file)
 
-    is_valid, errors = _is_schema_compliant(
+    schema_compliant, errors = _is_schema_compliant(
         checker_data.input_file_xml_root, xsd_file_path
     )
 
-    if not is_valid:
+    if not schema_compliant:
         issue_id = checker_data.result.register_issue(
             checker_bundle_name=constants.BUNDLE_NAME,
             checker_id=xml_constants.CHECKER_ID,
