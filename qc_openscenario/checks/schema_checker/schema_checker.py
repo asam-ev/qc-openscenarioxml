@@ -14,7 +14,7 @@ from qc_openscenario.checks.schema_checker import (
 )
 
 
-def run_checks(checker_data: models.CheckerData) -> models.CheckerData:
+def run_checks(checker_data: models.CheckerData) -> None:
     logging.info("Executing schema checks")
 
     checker_data.result.register_checker(
@@ -33,7 +33,7 @@ def run_checks(checker_data: models.CheckerData) -> models.CheckerData:
             checker_id=schema_constants.CHECKER_ID,
             status=StatusType.SKIPPED,
         )
-        return checker_data
+        return
 
     if checker_data.schema_version not in schema_files.SCHEMA_FILES:
 
@@ -45,7 +45,7 @@ def run_checks(checker_data: models.CheckerData) -> models.CheckerData:
             checker_id=schema_constants.CHECKER_ID,
             status=StatusType.SKIPPED,
         )
-        return checker_data
+        return
 
     rule_list = [schema_is_valid.check_rule]
 
@@ -62,5 +62,3 @@ def run_checks(checker_data: models.CheckerData) -> models.CheckerData:
         checker_id=schema_constants.CHECKER_ID,
         status=StatusType.COMPLETED,
     )
-
-    return checker_data

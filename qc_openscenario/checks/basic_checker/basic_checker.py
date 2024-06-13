@@ -34,7 +34,7 @@ def run_checks(config: Configuration, result: Result) -> models.CheckerData:
             input_file_xml_root=None,
             config=config,
             result=result,
-            schema_version="0.0",
+            schema_version=None,
         )
 
     else:

@@ -14,7 +14,9 @@ from qc_openscenario.checks import utils, models
 from qc_openscenario.checks.schema_checker import schema_constants
 
 
-def _is_schema_compliant(xml_tree: etree._ElementTree, schema_file: str) -> tuple:
+def _is_schema_compliant(
+    xml_tree: etree._ElementTree, schema_file: str
+) -> tuple[bool, etree._ListErrorLog]:
     """Check if input xml tree  is valid against the input schema file (.xsd)
 
     Args:
@@ -42,7 +44,10 @@ def _is_schema_compliant(xml_tree: etree._ElementTree, schema_file: str) -> tupl
 
 def check_rule(checker_data: models.CheckerData) -> None:
     """
-    Implements a rule to check if input file is a valid xml document
+    Implements a rule to check if input file is valid according to OpenSCENARIO schema
+
+    More info at
+        - https://github.com/asam-ev/qc-openscenarioxml/issues/2
     """
     logging.info("Executing schema_is_valid check")
 

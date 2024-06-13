@@ -13,7 +13,7 @@ from qc_openscenario.checks import utils, models
 from qc_openscenario.checks.basic_checker import basic_constants
 
 
-def _is_xml_doc(file_path: str) -> tuple:
+def _is_xml_doc(file_path: str) -> tuple[bool, tuple[int, int]]:
     try:
         with open(file_path, "rb") as file:
             xml_content = file.read()
@@ -29,6 +29,9 @@ def _is_xml_doc(file_path: str) -> tuple:
 def check_rule(input_xml_file_path: str, result: Result) -> bool:
     """
     Implements a rule to check if input file is a valid xml document
+
+    More info at
+        - https://github.com/asam-ev/qc-openscenarioxml/issues/1
     """
     logging.info("Executing is_an_xml_document check")
 
