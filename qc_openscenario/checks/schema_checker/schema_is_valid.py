@@ -11,7 +11,7 @@ from qc_openscenario import constants
 from qc_openscenario.schema import schema_files
 from qc_openscenario.checks import utils, models
 
-from qc_openscenario.checks.xml_checker import xml_constants
+from qc_openscenario.checks.schema_checker import schema_constants
 
 
 def _is_schema_compliant(xml_tree: etree._ElementTree, schema_file: str) -> tuple:
@@ -53,7 +53,7 @@ def check_rule(checker_data: models.CheckerData) -> None:
 
     rule_uid = checker_data.result.register_rule(
         checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=xml_constants.CHECKER_ID,
+        checker_id=schema_constants.CHECKER_ID,
         emanating_entity="asam.net",
         standard="xosc",
         definition_setting=schema_version,
@@ -72,7 +72,7 @@ def check_rule(checker_data: models.CheckerData) -> None:
     if not schema_compliant:
         issue_id = checker_data.result.register_issue(
             checker_bundle_name=constants.BUNDLE_NAME,
-            checker_id=xml_constants.CHECKER_ID,
+            checker_id=schema_constants.CHECKER_ID,
             description="Issue flagging when input file does not follow its version schema",
             level=IssueSeverity.ERROR,
             rule_uid=rule_uid,
@@ -81,7 +81,7 @@ def check_rule(checker_data: models.CheckerData) -> None:
         for error in errors:
             checker_data.result.add_file_location(
                 checker_bundle_name=constants.BUNDLE_NAME,
-                checker_id=xml_constants.CHECKER_ID,
+                checker_id=schema_constants.CHECKER_ID,
                 issue_id=issue_id,
                 row=error.line,
                 column=error.column,

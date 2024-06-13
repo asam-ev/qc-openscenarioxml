@@ -5,7 +5,7 @@ from datetime import datetime
 from qc_baselib import Configuration, Result
 
 from qc_openscenario import constants
-from qc_openscenario.checks.xml_checker import xml_checker
+from qc_openscenario.checks.schema_checker import schema_checker
 from qc_openscenario.checks.basic_checker import basic_checker
 
 logging.basicConfig(format="%(asctime)s - %(message)s", level=logging.INFO)
@@ -49,7 +49,7 @@ def main():
         checker_data = basic_checker.run_checks(config=config, result=result)
 
         # 2. Run xml checks
-        xml_checker.run_checks(checker_data)
+        schema_checker.run_checks(checker_data)
 
         result.write_to_file(
             config.get_checker_bundle_param(

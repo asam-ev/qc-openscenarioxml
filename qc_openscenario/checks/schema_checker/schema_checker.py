@@ -8,29 +8,29 @@ from qc_openscenario import constants
 from qc_openscenario.checks import utils, models
 from qc_openscenario.schema import schema_files
 
-from qc_openscenario.checks.xml_checker import (
-    xml_constants,
+from qc_openscenario.checks.schema_checker import (
+    schema_constants,
     schema_is_valid,
 )
 
 
 def run_checks(checker_data: models.CheckerData) -> models.CheckerData:
-    logging.info("Executing xml checks")
+    logging.info("Executing schema checks")
 
     checker_data.result.register_checker(
         checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=xml_constants.CHECKER_ID,
+        checker_id=schema_constants.CHECKER_ID,
         description="Check if xml properties of input file are properly set",
         summary="",
     )
 
     if checker_data.input_file_xml_root is None:
         logging.error(
-            f"Invalid xml input file. Checker {xml_constants.CHECKER_ID} skipped"
+            f"Invalid xml input file. Checker {schema_constants.CHECKER_ID} skipped"
         )
         checker_data.result.set_checker_status(
             checker_bundle_name=constants.BUNDLE_NAME,
-            checker_id=xml_constants.CHECKER_ID,
+            checker_id=schema_constants.CHECKER_ID,
             status=StatusType.SKIPPED,
         )
         return checker_data
@@ -38,11 +38,11 @@ def run_checks(checker_data: models.CheckerData) -> models.CheckerData:
     if checker_data.schema_version not in schema_files.SCHEMA_FILES:
 
         logging.error(
-            f"Version {checker_data.schema_version} unsupported. Checker {xml_constants.CHECKER_ID} skipped"
+            f"Version {checker_data.schema_version} unsupported. Checker {schema_constants.CHECKER_ID} skipped"
         )
         checker_data.result.set_checker_status(
             checker_bundle_name=constants.BUNDLE_NAME,
-            checker_id=xml_constants.CHECKER_ID,
+            checker_id=schema_constants.CHECKER_ID,
             status=StatusType.SKIPPED,
         )
         return checker_data
@@ -53,13 +53,13 @@ def run_checks(checker_data: models.CheckerData) -> models.CheckerData:
         rule(checker_data=checker_data)
 
     logging.info(
-        f"Issues found - {checker_data.result.get_checker_issue_count(checker_bundle_name=constants.BUNDLE_NAME, checker_id=xml_constants.CHECKER_ID)}"
+        f"Issues found - {checker_data.result.get_checker_issue_count(checker_bundle_name=constants.BUNDLE_NAME, checker_id=schema_constants.CHECKER_ID)}"
     )
 
     # TODO: Add logic to deal with error or to skip it
     checker_data.result.set_checker_status(
         checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=xml_constants.CHECKER_ID,
+        checker_id=schema_constants.CHECKER_ID,
         status=StatusType.COMPLETED,
     )
 

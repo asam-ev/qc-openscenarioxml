@@ -30,7 +30,6 @@ def run_checks(config: Configuration, result: Result) -> models.CheckerData:
 
     if not is_xml:
         logging.error("Error in input xml!")
-        print(result.get_issues)
         checker_data = models.CheckerData(
             input_file_xml_root=None,
             config=config,
