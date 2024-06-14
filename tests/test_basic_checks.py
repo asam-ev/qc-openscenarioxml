@@ -25,7 +25,7 @@ def test_is_an_xml_document_positive(
         checker_id=basic_constants.CHECKER_ID,
     )
     assert (
-        len(result.get_issues_by_rule_id("asam.net:xosc:1.0.0:xml.is_an_xml_document"))
+        len(result.get_issues_by_rule_uid("asam.net:xosc:1.0.0:xml.is_an_xml_document"))
         == 0
     )
 
@@ -46,7 +46,7 @@ def test_is_an_xml_document_negative(
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
 
-    xml_doc_issues = result.get_issues_by_rule_id(
+    xml_doc_issues = result.get_issues_by_rule_uid(
         "asam.net:xosc:1.0.0:xml.is_an_xml_document"
     )
     assert len(xml_doc_issues) == 1
