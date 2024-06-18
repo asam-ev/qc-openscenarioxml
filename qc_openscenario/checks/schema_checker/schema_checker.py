@@ -10,7 +10,7 @@ from qc_openscenario.schema import schema_files
 
 from qc_openscenario.checks.schema_checker import (
     schema_constants,
-    schema_is_valid,
+    valid_schema,
 )
 
 
@@ -47,7 +47,7 @@ def run_checks(checker_data: models.CheckerData) -> None:
         )
         return
 
-    rule_list = [schema_is_valid.check_rule]
+    rule_list = [valid_schema.check_rule]
 
     for rule in rule_list:
         rule(checker_data=checker_data)
