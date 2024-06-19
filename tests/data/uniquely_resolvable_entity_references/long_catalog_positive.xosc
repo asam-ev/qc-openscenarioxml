@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<OpenSCENARIO>
+    <FileHeader description="Vehicle Catalog" author="ASAM" revMajor="1" revMinor="2"
+        date="2023-11-15T11:00:00.000000" />
+    <Catalog name="VehicleCatalog_1">
+        <Vehicle name="car_white" vehicleCategory="car">
+            <BoundingBox>
+                <Center x="1.4" y="0.0" z="0.9" />
+                <Dimensions width="2.0" length="5.0" height="1.8" />
+            </BoundingBox>
+            <Performance maxSpeed="69" maxDeceleration="30" maxAcceleration="5" />
+            <Axles>
+                <FrontAxle maxSteering="30" wheelDiameter="0.8" trackWidth="1.68" positionX="2.98"
+                    positionZ="0.4" />
+                <RearAxle maxSteering="30" wheelDiameter="0.8" trackWidth="1.68" positionX="0"
+                    positionZ="0.4" />
+            </Axles>
+            <Properties>
+                <Property name="control" value="internal" />
+                <Property name="model_id" value="0" />
+                <File
+                    filepath="../../../external/delivery/esmini-noosg/resources/osgb/car_white.osgb" />
+            </Properties>
+        </Vehicle>
+        <Vehicle name="car_red" />
+        <Controller name="controller1" />
+        <Controller name="controller2" />
+        <Maneuver name="maneuver1" />
+        <Maneuver name="maneuver2" />
+        <Route name="route1" />
+        <Route name="route2" />
+
+    </Catalog>
+</OpenSCENARIO>

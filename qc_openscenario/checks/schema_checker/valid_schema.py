@@ -75,15 +75,15 @@ def check_rule(checker_data: models.CheckerData) -> None:
     )
 
     if not schema_compliant:
-        issue_id = checker_data.result.register_issue(
-            checker_bundle_name=constants.BUNDLE_NAME,
-            checker_id=schema_constants.CHECKER_ID,
-            description="Issue flagging when input file does not follow its version schema",
-            level=IssueSeverity.ERROR,
-            rule_uid=rule_uid,
-        )
 
         for error in errors:
+            issue_id = checker_data.result.register_issue(
+                checker_bundle_name=constants.BUNDLE_NAME,
+                checker_id=schema_constants.CHECKER_ID,
+                description="Issue flagging when input file does not follow its version schema",
+                level=IssueSeverity.ERROR,
+                rule_uid=rule_uid,
+            )
             checker_data.result.add_file_location(
                 checker_bundle_name=constants.BUNDLE_NAME,
                 checker_id=schema_constants.CHECKER_ID,
