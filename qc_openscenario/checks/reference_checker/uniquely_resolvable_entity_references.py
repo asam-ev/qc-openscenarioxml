@@ -70,6 +70,11 @@ def check_rule(checker_data: models.CheckerData) -> None:
         child_names = {}
 
         # Iterate catalog children within current 'Catalog' node
+        # Currently the checks verifies that the same name is not used in the same
+        # catalog regardless the tag type
+        # E.g. Catalog childrens:
+        # # [Vehicle name="abc", Maneuver name="abc"]
+        # Will trigger the issue
         for child_node in catalog_node.iterchildren():
             name_attr = child_node.attrib.get("name")
             if name_attr:
