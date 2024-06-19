@@ -49,7 +49,7 @@ def check_rule(checker_data: models.CheckerData) -> None:
     More info at
         - https://github.com/asam-ev/qc-openscenarioxml/issues/2
     """
-    logging.info("Executing schema_is_valid check")
+    logging.info("Executing valid_schema check")
 
     schema_version = checker_data.schema_version
     if schema_version is None:
@@ -62,7 +62,7 @@ def check_rule(checker_data: models.CheckerData) -> None:
         emanating_entity="asam.net",
         standard="xosc",
         definition_setting="1.0.0",
-        rule_full_name="xml.schema_is_valid",
+        rule_full_name="xml.valid_schema",
     )
 
     schema_files_dict = schema_files.SCHEMA_FILES
