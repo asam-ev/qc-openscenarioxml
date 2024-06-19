@@ -27,7 +27,7 @@ def test_uniquely_resolvable_positive1(
     assert (
         len(
             result.get_issues_by_rule_uid(
-                "asam.net:xosc:1.0.0:reference_control.uniquely_resolvable_entity_references"
+                "asam.net:xosc:1.2.0:reference_control.uniquely_resolvable_entity_references"
             )
         )
         == 0
@@ -57,7 +57,7 @@ def test_uniquely_resolvable_positive2(
     assert (
         len(
             result.get_issues_by_rule_uid(
-                "asam.net:xosc:1.0.0:reference_control.uniquely_resolvable_entity_references"
+                "asam.net:xosc:1.2.0:reference_control.uniquely_resolvable_entity_references"
             )
         )
         == 0
@@ -81,7 +81,7 @@ def test_uniquely_resolvable_negative(
     result.load_from_file(test_utils.REPORT_FILE_PATH)
 
     reference_issues = result.get_issues_by_rule_uid(
-        "asam.net:xosc:1.0.0:reference_control.uniquely_resolvable_entity_references"
+        "asam.net:xosc:1.2.0:reference_control.uniquely_resolvable_entity_references"
     )
     assert len(reference_issues) == 1
     assert reference_issues[0].level == IssueSeverity.WARNING

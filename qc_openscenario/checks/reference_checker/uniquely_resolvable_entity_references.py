@@ -24,8 +24,7 @@ def get_catalogs(root: etree._ElementTree) -> List[etree._ElementTree]:
     return catalogs
 
 
-# Function to get XPath of an element
-def get_xpath(root, element):
+def get_xpath(root: etree._ElementTree, element: etree._ElementTree) -> str:
     return root.getpath(element)
 
 
@@ -43,12 +42,20 @@ def check_rule(checker_data: models.CheckerData) -> None:
         logging.info(f"- Version not found in the file. Skipping check")
         return
 
+    min_rule_version = "1.2.0"
+    rule_severity = IssueSeverity.WARNING
+    if utils.compare_versions(schema_version, min_rule_version) < 0:
+        logging.info(
+            f"- Version {schema_version} is less than minimum required version {min_rule_version}. Skipping check"
+        )
+        return
+
     rule_uid = checker_data.result.register_rule(
         checker_bundle_name=constants.BUNDLE_NAME,
         checker_id=reference_constants.CHECKER_ID,
         emanating_entity="asam.net",
         standard="xosc",
-        definition_setting="1.0.0",
+        definition_setting="1.2.0",
         rule_full_name="reference_control.uniquely_resolvable_entity_references",
     )
 
@@ -83,7 +90,7 @@ def check_rule(checker_data: models.CheckerData) -> None:
             checker_bundle_name=constants.BUNDLE_NAME,
             checker_id=reference_constants.CHECKER_ID,
             description="Issue flagging when referenced names are not unique",
-            level=IssueSeverity.WARNING,
+            level=rule_severity,
             rule_uid=rule_uid,
         )
 

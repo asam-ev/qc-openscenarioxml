@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <OpenSCENARIO>
-    <FileHeader description="Vehicle Catalog" author="ASAM" revMajor="1" revMinor="1"
+    <FileHeader description="Vehicle Catalog" author="ASAM" revMajor="1" revMinor="2"
         date="2023-11-15T11:00:00.000000" />
     <Catalog name="VehicleCatalog_1">
         <Vehicle name="car_white" vehicleCategory="car">
