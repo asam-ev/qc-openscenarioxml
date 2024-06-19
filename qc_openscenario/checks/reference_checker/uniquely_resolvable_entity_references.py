@@ -61,29 +61,29 @@ def check_rule(checker_data: models.CheckerData) -> None:
 
     root = checker_data.input_file_xml_root
 
-    # List to store problematic vehicle nodes
+    # List to store problematic nodes
     errors = []
 
     # Iterate over each 'Catalog' node
     for catalog_node in root.findall(".//Catalog"):
-        # Dictionary to track 'vehicle' nodes by 'name' attribute
-        vehicle_names = {}
+        # Dictionary to track child nodes by 'name' attribute
+        child_names = {}
 
-        # Iterate over 'Vehicle' nodes within current 'Catalog' node
-        for vehicle_node in catalog_node.findall(".//Vehicle"):
-            name_attr = vehicle_node.attrib.get("name")
+        # Iterate catalog children within current 'Catalog' node
+        for child_node in catalog_node.iterchildren():
+            name_attr = child_node.attrib.get("name")
             if name_attr:
-                if name_attr in vehicle_names:
+                if name_attr in child_names:
                     errors.append(
                         {
                             "name": name_attr,
-                            "tag": vehicle_node.tag,
-                            "first_xpath": get_xpath(root, vehicle_names[name_attr]),
-                            "duplicate_xpath": get_xpath(root, vehicle_node),
+                            "tag": child_node.tag,
+                            "first_xpath": get_xpath(root, child_names[name_attr]),
+                            "duplicate_xpath": get_xpath(root, child_node),
                         }
                     )
                 else:
-                    vehicle_names[name_attr] = vehicle_node
+                    child_names[name_attr] = child_node
 
     if len(errors) > 0:
         issue_id = checker_data.result.register_issue(
@@ -98,7 +98,9 @@ def check_rule(checker_data: models.CheckerData) -> None:
             error_name = error["name"]
             error_first_xpath = error["first_xpath"]
             error_duplicate_xpath = error["duplicate_xpath"]
-            error_msg = f"Duplicate vehicle name {error_name}. First occurrence at {error_first_xpath} duplicate at {error_duplicate_xpath}"
+            error_msg = f"Duplicate name {error_name}. First occurrence at {error_first_xpath} duplicate at {error_duplicate_xpath}"
+            logging.error(f"- Error: {error_msg}")
+            logging.error(f"- Duplicate xpath: {error_duplicate_xpath}")
             checker_data.result.add_xml_location(
                 checker_bundle_name=constants.BUNDLE_NAME,
                 checker_id=reference_constants.CHECKER_ID,
