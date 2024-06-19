@@ -6,11 +6,11 @@ from qc_openscenario.checks.schema_checker import schema_constants
 from qc_baselib import Result, IssueSeverity
 
 
-def test_schema_is_valid_positive(
+def test_valid_schema_positive(
     monkeypatch,
 ) -> None:
-    base_path = "tests/data/schema_is_valid/"
-    target_file_name = f"xml.schema_is_valid.positive.xml"
+    base_path = "tests/data/valid_schema/"
+    target_file_name = f"xml.valid_schema.positive.xosc"
     target_file_path = os.path.join(base_path, target_file_name)
 
     test_utils.create_test_config(target_file_path)
@@ -21,18 +21,18 @@ def test_schema_is_valid_positive(
     result.load_from_file(test_utils.REPORT_FILE_PATH)
 
     assert (
-        len(result.get_issues_by_rule_uid("asam.net:xosc:1.0.0:xml.schema_is_valid"))
+        len(result.get_issues_by_rule_uid("asam.net:xosc:1.0.0:xml.valid_schema"))
         == 0
     )
 
     test_utils.cleanup_files()
 
 
-def test_schema_is_valid_negative(
+def test_valid_schema_negative(
     monkeypatch,
 ) -> None:
-    base_path = "tests/data/schema_is_valid/"
-    target_file_name = f"xml.schema_is_valid.negative.xml"
+    base_path = "tests/data/valid_schema/"
+    target_file_name = f"xml.valid_schema.negative.xosc"
     target_file_path = os.path.join(base_path, target_file_name)
 
     test_utils.create_test_config(target_file_path)
@@ -43,7 +43,7 @@ def test_schema_is_valid_negative(
     result.load_from_file(test_utils.REPORT_FILE_PATH)
 
     assert (
-        len(result.get_issues_by_rule_uid("asam.net:xosc:1.0.0:xml.schema_is_valid"))
+        len(result.get_issues_by_rule_uid("asam.net:xosc:1.0.0:xml.valid_schema"))
         == 0
     )
     test_utils.cleanup_files()
@@ -52,8 +52,8 @@ def test_schema_is_valid_negative(
 def test_unsupported_schema_version(
     monkeypatch,
 ) -> None:
-    base_path = "tests/data/schema_is_valid/"
-    target_file_name = f"test_ramp_v09.xosc"
+    base_path = "tests/data/valid_schema/"
+    target_file_name = f"unsupported_schema.xosc"
     target_file_path = os.path.join(base_path, target_file_name)
 
     test_utils.create_test_config(target_file_path)
@@ -68,7 +68,7 @@ def test_unsupported_schema_version(
         checker_id=schema_constants.CHECKER_ID,
     )
     assert (
-        len(result.get_issues_by_rule_uid("asam.net:xosc:1.0.0:xml.schema_is_valid"))
+        len(result.get_issues_by_rule_uid("asam.net:xosc:1.0.0:xml.valid_schema"))
         == 0
     )
     test_utils.cleanup_files()
@@ -77,8 +77,8 @@ def test_unsupported_schema_version(
 def test_invalid_schema(
     monkeypatch,
 ) -> None:
-    base_path = "tests/data/schema_is_valid/"
-    target_file_name = f"invalid_schema.xml"
+    base_path = "tests/data/valid_schema/"
+    target_file_name = f"invalid_schema.xosc"
     target_file_path = os.path.join(base_path, target_file_name)
 
     test_utils.create_test_config(target_file_path)
@@ -94,7 +94,7 @@ def test_invalid_schema(
     )
 
     xml_schema_issues = result.get_issues_by_rule_uid(
-        "asam.net:xosc:1.0.0:xml.schema_is_valid"
+        "asam.net:xosc:1.0.0:xml.valid_schema"
     )
     assert len(xml_schema_issues) == 1
     assert xml_schema_issues[0].level == IssueSeverity.ERROR

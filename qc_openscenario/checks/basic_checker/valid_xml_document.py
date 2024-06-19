@@ -33,7 +33,7 @@ def check_rule(input_xml_file_path: str, result: Result) -> bool:
     More info at
         - https://github.com/asam-ev/qc-openscenarioxml/issues/1
     """
-    logging.info("Executing is_an_xml_document check")
+    logging.info("Executing valid_xml_document check")
 
     rule_uid = result.register_rule(
         checker_bundle_name=constants.BUNDLE_NAME,
@@ -41,7 +41,7 @@ def check_rule(input_xml_file_path: str, result: Result) -> bool:
         emanating_entity="asam.net",
         standard="xosc",
         definition_setting="1.0.0",
-        rule_full_name="xml.is_an_xml_document",
+        rule_full_name="xml.valid_xml_document",
     )
 
     is_valid, error_location = _is_xml_doc(input_xml_file_path)

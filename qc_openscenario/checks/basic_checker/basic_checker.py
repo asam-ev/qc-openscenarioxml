@@ -9,7 +9,7 @@ from qc_openscenario.checks import utils, models
 
 from qc_openscenario.checks.basic_checker import (
     basic_constants,
-    is_an_xml_document,
+    valid_xml_document,
 )
 
 
@@ -24,7 +24,7 @@ def run_checks(config: Configuration, result: Result) -> models.CheckerData:
     )
 
     xml_file_path = config.get_config_param("XoscFile")
-    is_xml = is_an_xml_document.check_rule(xml_file_path, result)
+    is_xml = valid_xml_document.check_rule(xml_file_path, result)
 
     checker_data = None
 
