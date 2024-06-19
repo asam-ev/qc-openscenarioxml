@@ -140,3 +140,33 @@ def test_long_catalog_positive(
         )
         == 0
     )
+
+
+def test_minimum_version(
+    monkeypatch,
+) -> None:
+    base_path = "tests/data/uniquely_resolvable_entity_references/"
+    target_file_name = f"vehicle_catalog_negative_v10.xosc"
+    target_file_path = os.path.join(base_path, target_file_name)
+
+    test_utils.create_test_config(target_file_path)
+
+    test_utils.launch_main(monkeypatch)
+
+    result = Result()
+    result.load_from_file(test_utils.REPORT_FILE_PATH)
+
+    _ = result.get_checker_result(
+        checker_bundle_name=constants.BUNDLE_NAME,
+        checker_id=reference_constants.CHECKER_ID,
+    )
+    # 0 issues because minumum version is not met and the check is not performed
+    # (even if it is a negative sample)
+    assert (
+        len(
+            result.get_issues_by_rule_uid(
+                "asam.net:xosc:1.2.0:reference_control.uniquely_resolvable_entity_references"
+            )
+        )
+        == 0
+    )

@@ -14,6 +14,8 @@ from qc_openscenario.checks import utils, models
 from qc_openscenario.checks.reference_checker import reference_constants
 from collections import deque, defaultdict
 
+MIN_RULE_VERSION = "1.2.0"
+
 
 def get_catalogs(root: etree._ElementTree) -> List[etree._ElementTree]:
     catalogs = []
@@ -42,11 +44,10 @@ def check_rule(checker_data: models.CheckerData) -> None:
         logging.info(f"- Version not found in the file. Skipping check")
         return
 
-    min_rule_version = "1.2.0"
     rule_severity = IssueSeverity.WARNING
-    if utils.compare_versions(schema_version, min_rule_version) < 0:
+    if utils.compare_versions(schema_version, MIN_RULE_VERSION) < 0:
         logging.info(
-            f"- Version {schema_version} is less than minimum required version {min_rule_version}. Skipping check"
+            f"- Version {schema_version} is less than minimum required version {MIN_RULE_VERSION}. Skipping check"
         )
         return
 
@@ -55,7 +56,7 @@ def check_rule(checker_data: models.CheckerData) -> None:
         checker_id=reference_constants.CHECKER_ID,
         emanating_entity="asam.net",
         standard="xosc",
-        definition_setting="1.2.0",
+        definition_setting=MIN_RULE_VERSION,
         rule_full_name="reference_control.uniquely_resolvable_entity_references",
     )
 
