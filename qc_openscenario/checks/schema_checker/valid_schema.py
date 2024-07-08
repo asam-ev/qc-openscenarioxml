@@ -90,6 +90,5 @@ def check_rule(checker_data: models.CheckerData) -> None:
                 issue_id=issue_id,
                 row=error.line,
                 column=error.column,
-                file_type="xosc",
                 description=error.message,
             )

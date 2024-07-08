@@ -41,3 +41,16 @@ def compare_versions(version1: str, version2: str) -> int:
         return 1
     else:
         return 0
+
+
+def get_xodr_file(root: etree._ElementTree) -> Union[str, None]:
+    road_network = root.find("RoadNetwork")
+    if road_network is None:
+        return None
+    logic_file = road_network.find("LogicFile")
+    if logic_file is None:
+        return None
+    filepath = logic_file.get("filepath")
+    if filepath is None:
+        return None
+    return filepath
