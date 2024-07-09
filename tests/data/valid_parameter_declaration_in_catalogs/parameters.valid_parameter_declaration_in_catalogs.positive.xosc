@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<OpenSCENARIO xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../../qc_openscenario/schema/1.3.0/OpenSCENARIO.xsd">
+    <FileHeader author="ASAM e.V." date="2021-02-05T18:50:17" description="Simple Overtaker example"
+        revMajor="1" revMinor="3" />
+    <Catalog name="PositiveCatalog">
+        <Vehicle name="Vehicle 1" vehicleCategory="car">
+            <ParameterDeclarations>
+                <ParameterDeclaration name="centerBoundingBoxX" parameterType="double" value="1.3" />
+            </ParameterDeclarations>
+            <BoundingBox>
+                <Center x="$centerBoundingBoxX" y="0.0" z="0.75" />
+                <Dimensions width="1.8" length="4.5" height="1.5" />
+            </BoundingBox>
+            <Performance maxSpeed="200.0" maxDeceleration="30.0" maxAcceleration="200.0" />
+            <Axles>
+                <FrontAxle positionZ="0.4" trackWidth="1.68" positionX="2.98"
+                    maxSteering="0.5235987756" wheelDiameter="0.8" />
+                <RearAxle positionZ="0.4" trackWidth="1.68" positionX="0.0"
+                    maxSteering="0.5235987756" wheelDiameter="0.8" />
+            </Axles>
+        </Vehicle>
+    </Catalog>
+</OpenSCENARIO>
