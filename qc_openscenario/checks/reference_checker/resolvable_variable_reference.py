@@ -60,6 +60,7 @@ def check_rule(checker_data: models.CheckerData) -> None:
     parameter_declaration_nodes = root.find("ParameterDeclarations")
     variable_declaration_nodes = root.find("VariableDeclarations")
 
+    # Get parameters and variables declarations
     defined_param_variables = set()
     if parameter_declaration_nodes is not None:
         for declaration_node in list(parameter_declaration_nodes):
