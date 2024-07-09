@@ -41,3 +41,25 @@ def compare_versions(version1: str, version2: str) -> int:
         return 1
     else:
         return 0
+
+
+def get_xodr_road_network(root: etree._ElementTree) -> Union[etree._ElementTree, None]:
+    """Get parsed xodr tree indicated in the RoadNetwork/LogicFile node of the input root
+
+    Args:
+        root (etree._ElementTree): root node of the xml document that refers to a xodr file
+
+    Returns:
+        Union[etree._ElementTree, None]: the parsed road network tree.
+                                         None if the specified nodes in the root or the road network file are not found
+    """
+    road_network = root.find("RoadNetwork")
+    if road_network is None:
+        return None
+    logic_file = road_network.find("LogicFile")
+    if logic_file is None:
+        return None
+    filepath = logic_file.get("filepath")
+    if filepath is None:
+        return None
+    return etree.parse(filepath)

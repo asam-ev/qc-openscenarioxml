@@ -10,6 +10,8 @@ from qc_openscenario.checks import utils, models
 from qc_openscenario.checks.reference_checker import (
     reference_constants,
     uniquely_resolvable_entity_references,
+    resolvable_signal_id_in_traffic_signal_state_action,
+    resolvable_traffic_signal_controller_by_traffic_signal_controller_ref,
 )
 
 
@@ -50,7 +52,11 @@ def run_checks(checker_data: models.CheckerData) -> None:
         )
         return
 
-    rule_list = [uniquely_resolvable_entity_references.check_rule]
+    rule_list = [
+        uniquely_resolvable_entity_references.check_rule,
+        resolvable_signal_id_in_traffic_signal_state_action.check_rule,
+        resolvable_traffic_signal_controller_by_traffic_signal_controller_ref.check_rule,
+    ]
 
     for rule in rule_list:
         rule(checker_data=checker_data)

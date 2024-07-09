@@ -1,4 +1,5 @@
 import logging
+import os
 
 from lxml import etree
 
@@ -35,17 +36,24 @@ def run_checks(config: Configuration, result: Result) -> models.CheckerData:
             config=config,
             result=result,
             schema_version=None,
+            xodr_root=None,
         )
 
     else:
-        root = etree.parse(config.get_config_param("XoscFile"))
+        input_file_path = config.get_config_param("XoscFile")
+        root = etree.parse(input_file_path)
         xosc_schema_version = utils.get_standard_schema_version(root)
 
+        previous_wd = os.getcwd()
+        os.chdir(os.path.dirname(input_file_path))
+        xodr_root = utils.get_xodr_road_network(root)
+        os.chdir(previous_wd)
         checker_data = models.CheckerData(
             input_file_xml_root=root,
             config=config,
             result=result,
             schema_version=xosc_schema_version,
+            xodr_root=xodr_root,
         )
 
     logging.info(

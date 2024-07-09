@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from lxml import etree
+from typing import Union
 
 from qc_baselib import Configuration, Result
 
@@ -10,3 +11,4 @@ class CheckerData:
     config: Configuration
     result: Result
     schema_version: str
+    xodr_root: Union[None, etree._ElementTree]

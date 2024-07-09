@@ -62,7 +62,6 @@ def check_rule(input_xml_file_path: str, result: Result) -> bool:
             issue_id=issue_id,
             row=error_location[0],
             column=error_location[1],
-            file_type="xosc",
             description=f"Invalid xml detected",
         )
 
