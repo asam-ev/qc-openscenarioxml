@@ -15,10 +15,7 @@ from qc_openscenario.checks.reference_checker import reference_constants
 from collections import deque, defaultdict
 
 MIN_RULE_VERSION = "1.2.0"
-
-
-def get_xpath(root: etree._ElementTree, element: etree._ElementTree) -> str:
-    return root.getpath(element)
+RULE_SEVERITY = IssueSeverity.ERROR
 
 
 def check_rule(checker_data: models.CheckerData) -> None:
@@ -45,7 +42,6 @@ def check_rule(checker_data: models.CheckerData) -> None:
         logging.info(f"- Version not found in the file. Skipping check")
         return
 
-    rule_severity = IssueSeverity.ERROR
     if utils.compare_versions(schema_version, MIN_RULE_VERSION) < 0:
         logging.info(
             f"- Version {schema_version} is less than minimum required version {MIN_RULE_VERSION}. Skipping check"
@@ -78,22 +74,24 @@ def check_rule(checker_data: models.CheckerData) -> None:
         )
         return
 
-    ts_controller_names = [x.get("name") for x in ts_controllers]
+    ts_controller_names = set()
+    for ts_controller in ts_controllers:
+        current_name = ts_controller.get("name")
+        if current_name is not None:
+            ts_controller_names.add(current_name)
 
     ts_controller_actions = root.findall(".//TrafficSignalControllerAction")
 
     for ts_controller in ts_controller_actions:
         current_name = ts_controller.get("trafficSignalControllerRef")
-        if current_name not in ts_controller_names:
-            xpath = get_xpath(
-                root,
-                ts_controller,
-            )
+        if current_name is not None and current_name not in ts_controller_names:
+            xpath = root.getpath(ts_controller)
+
             issue_id = checker_data.result.register_issue(
                 checker_bundle_name=constants.BUNDLE_NAME,
                 checker_id=reference_constants.CHECKER_ID,
                 description="Issue flagging traffic signal controller reference not present in the declared RoadNetwork",
-                level=rule_severity,
+                level=RULE_SEVERITY,
                 rule_uid=rule_uid,
             )
             checker_data.result.add_xml_location(

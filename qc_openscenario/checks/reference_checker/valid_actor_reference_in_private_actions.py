@@ -15,14 +15,18 @@ from qc_openscenario.checks.reference_checker import reference_constants
 from collections import deque, defaultdict
 
 MIN_RULE_VERSION = "1.2.0"
-RULE_SEVERITY = IssueSeverity.ERROR
+
+
+def get_xpath(root: etree._ElementTree, element: etree._ElementTree) -> str:
+    return root.getpath(element)
 
 
 def check_rule(checker_data: models.CheckerData) -> None:
     """
-    Rule ID: asam.net:xosc:1.2.0:reference_control.resolvable_signal_id_in_traffic_signal_state_action
+    Rule ID: asam.net:xosc:1.2.0:reference_control.valid_actor_reference_in_private_actions
 
-    Description: TrafficSignalStateAction:name -> Signal ID must exist within the given road network
+    Description: In a ManeuverGroup, if the defined action is a private action an actor must be defined.
+
     Severity: ERROR
 
     Version range: [1.2.0, )
@@ -31,15 +35,16 @@ def check_rule(checker_data: models.CheckerData) -> None:
         None
 
     More info at
-        - https://github.com/asam-ev/qc-openscenarioxml/issues/13
+        - https://github.com/asam-ev/qc-openscenarioxml/issues/17
     """
-    logging.info("Executing resolvable_signal_id_in_traffic_signal_state_action check")
+    logging.info("Executing valid_actor_reference_in_private_actions check")
 
     schema_version = checker_data.schema_version
     if schema_version is None:
         logging.info(f"- Version not found in the file. Skipping check")
         return
 
+    rule_severity = IssueSeverity.ERROR
     if utils.compare_versions(schema_version, MIN_RULE_VERSION) < 0:
         logging.info(
             f"- Version {schema_version} is less than minimum required version {MIN_RULE_VERSION}. Skipping check"
@@ -52,35 +57,40 @@ def check_rule(checker_data: models.CheckerData) -> None:
         emanating_entity="asam.net",
         standard="xosc",
         definition_setting=MIN_RULE_VERSION,
-        rule_full_name="reference_control.resolvable_signal_id_in_traffic_signal_state_action",
+        rule_full_name="reference_control.valid_actor_reference_in_private_actions",
     )
 
     root = checker_data.input_file_xml_root
 
-    if checker_data.xodr_root is None:
-        logging.error(f" - Cannot read xodr path. Abort")
+    maneuver_groups = root.findall(".//ManeuverGroup")
+    if maneuver_groups is None:
+        logging.error(
+            "Cannot find ManeuverGroup node in provided XOSC file. Skipping check"
+        )
         return
 
-    xodr_signal_list = checker_data.xodr_root.findall(".//signal")
+    for maneuver_group in maneuver_groups:
 
-    xodr_signal_ids = set()
-    for xodr_signal in xodr_signal_list:
-        signal_id = xodr_signal.get("id")
-        if signal_id is not None:
-            xodr_signal_ids.add(signal_id)
+        private_actions = maneuver_group.findall(".//PrivateAction")
+        has_private_action = len(private_actions) > 0
+        no_actor_provided = len(maneuver_group.find(".//Actors").getchildren()) == 0
 
-    xosc_traffic_lights = root.findall(".//TrafficSignalStateAction")
+        print(maneuver_group)
+        print(maneuver_group.find(".//Actors"))
+        print(list(maneuver_group.find(".//Actors")))
 
-    for xosc_traffic_light in xosc_traffic_lights:
-        current_name = xosc_traffic_light.get("name")
+        has_issue = has_private_action and no_actor_provided
 
-        if current_name is not None and current_name not in xodr_signal_ids:
-            xpath = root.getpath(xosc_traffic_light)
+        if has_issue:
+            xpath = get_xpath(
+                root,
+                maneuver_group,
+            )
             issue_id = checker_data.result.register_issue(
                 checker_bundle_name=constants.BUNDLE_NAME,
                 checker_id=reference_constants.CHECKER_ID,
-                description="Issue flagging traffic light id not present in linked xodr file",
-                level=RULE_SEVERITY,
+                description="Issue flagging when no Actor is specified but a PrivateAction is used",
+                level=rule_severity,
                 rule_uid=rule_uid,
             )
             checker_data.result.add_xml_location(
@@ -88,5 +98,5 @@ def check_rule(checker_data: models.CheckerData) -> None:
                 checker_id=reference_constants.CHECKER_ID,
                 issue_id=issue_id,
                 xpath=xpath,
-                description=f"Traffic Light {xpath} with id {current_name} not found in xodr file",
+                description=f"ManeuverGroup at {xpath} uses private actions {private_actions} but it defines no actor",
             )

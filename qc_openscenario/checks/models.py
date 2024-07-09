@@ -10,3 +10,4 @@ class CheckerData:
     config: Configuration
     result: Result
     schema_version: str
+    xodr_root: etree._ElementTree
