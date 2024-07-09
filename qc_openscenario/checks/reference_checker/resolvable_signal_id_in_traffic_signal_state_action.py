@@ -58,10 +58,14 @@ def check_rule(checker_data: models.CheckerData) -> None:
     root = checker_data.input_file_xml_root
 
     if checker_data.xodr_root is None:
-        logging.error(f" - Cannot read xodr path. Abort")
+        logging.error(f" - Cannot read xodr file. Abort")
         return
 
     xodr_signal_list = checker_data.xodr_root.findall(".//signal")
+
+    if xodr_signal_list is None:
+        logging.error(f" - Cannot read signals from xodr file. Abort")
+        return
 
     xodr_signal_ids = set()
     for xodr_signal in xodr_signal_list:
