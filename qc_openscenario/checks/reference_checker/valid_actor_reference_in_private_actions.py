@@ -15,6 +15,7 @@ from qc_openscenario.checks.reference_checker import reference_constants
 from collections import deque, defaultdict
 
 MIN_RULE_VERSION = "1.2.0"
+RULE_SEVERITY = IssueSeverity.ERROR
 
 
 def check_rule(checker_data: models.CheckerData) -> None:
@@ -40,7 +41,6 @@ def check_rule(checker_data: models.CheckerData) -> None:
         logging.info(f"- Version not found in the file. Skipping check")
         return
 
-    rule_severity = IssueSeverity.ERROR
     if utils.compare_versions(schema_version, MIN_RULE_VERSION) < 0:
         logging.info(
             f"- Version {schema_version} is less than minimum required version {MIN_RULE_VERSION}. Skipping check"
@@ -87,7 +87,7 @@ def check_rule(checker_data: models.CheckerData) -> None:
                 checker_bundle_name=constants.BUNDLE_NAME,
                 checker_id=reference_constants.CHECKER_ID,
                 description="Issue flagging when no Actor is specified but a PrivateAction is used",
-                level=rule_severity,
+                level=RULE_SEVERITY,
                 rule_uid=rule_uid,
             )
             private_actions_xpaths = [root.getpath(x) for x in private_actions]
