@@ -12,3 +12,5 @@ from . import (
 from . import (
     valid_actor_reference_in_private_actions as valid_actor_reference_in_private_actions,
 )
+from . import resolvable_entity_references as resolvable_entity_references
+from . import resolvable_variable_reference as resolvable_variable_reference
