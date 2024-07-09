@@ -9,3 +9,6 @@ from . import (
 from . import (
     resolvable_traffic_signal_controller_by_traffic_signal_controller_ref as resolvable_traffic_signal_controller_by_traffic_signal_controller_ref,
 )
+from . import (
+    valid_actor_reference_in_private_actions as valid_actor_reference_in_private_actions,
+)
