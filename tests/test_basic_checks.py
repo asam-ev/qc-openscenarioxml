@@ -48,3 +48,21 @@ def test_valid_xml_document_negative(
     assert len(xml_doc_issues) == 1
     assert xml_doc_issues[0].level == IssueSeverity.ERROR
     test_utils.cleanup_files()
+
+
+def test_parametric_input_xodr(
+    monkeypatch,
+) -> None:
+    base_path = "tests/data/parametric_input_xodr/"
+    target_file_name = f"CloseVehicleCrossing.xosc"
+    target_file_path = os.path.join(base_path, target_file_name)
+
+    test_utils.create_test_config(target_file_path)
+
+    test_utils.launch_main(monkeypatch)
+
+    result = Result()
+    result.load_from_file(test_utils.REPORT_FILE_PATH)
+
+    assert result.get_issue_count() == 0
+    test_utils.cleanup_files()
