@@ -68,6 +68,7 @@ def check_rule(checker_data: models.CheckerData) -> None:
         if current_name is not None:
             defined_entities.add(current_name)
 
+    logging.debug(f"Defined entities : {defined_entities}")
     storyboard_node = root.find("Storyboard")
     if storyboard_node is None:
         logging.error(
@@ -79,7 +80,21 @@ def check_rule(checker_data: models.CheckerData) -> None:
 
     for node_with_entity_ref in nodes_with_entity_ref:
         current_name = node_with_entity_ref.get("entityRef")
-        if current_name is not None and current_name not in defined_entities:
+
+        if current_name is None:
+            continue
+
+        has_issue = False
+        if current_name.startswith("$"):
+            current_name_param = current_name[1:]
+            current_name_value = utils.get_parameter_value(root, current_name_param)
+            logging.debug(f"current_name_param: {current_name_param}")
+            logging.debug(f"current_name_value: {current_name_value}")
+            has_issue = current_name_value is None
+        else:
+            has_issue = current_name not in defined_entities
+
+        if has_issue:
             xpath = root.getpath(node_with_entity_ref)
 
             issue_id = checker_data.result.register_issue(
