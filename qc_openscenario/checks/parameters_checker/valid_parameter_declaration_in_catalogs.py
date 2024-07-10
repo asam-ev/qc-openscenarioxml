@@ -114,5 +114,5 @@ def check_rule(checker_data: models.CheckerData) -> None:
                         checker_id=parameters_constants.CHECKER_ID,
                         issue_id=issue_id,
                         xpath=xpath,
-                        description=f"Parameter value {attr_value[1:]} for attribute {attr_name} not defined in Catalog or with no default value",
+                        description=f"Parameter value {attr_value[1:]} for attribute {attr_name} is not defined in Catalog or has no default value",
                     )
