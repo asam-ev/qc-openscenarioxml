@@ -43,6 +43,35 @@ def compare_versions(version1: str, version2: str) -> int:
         return 0
 
 
+def get_parameter_value(
+    root: etree._ElementTree, parameter_name: str
+) -> Union[None, str, int, float]:
+    """Read all ParameterDeclaration nodes from root and get the value of parameter_name if present
+
+    Args:
+        root (etree._ElementTree): root node of the xml document
+        parameter_name (str): the parameter name to search
+
+    Returns:
+        Union[None, str, int, float]: the parameter value is present, with its type. None if the parameter_name is not found
+    """
+    param_declarations = root.findall(".//ParameterDeclaration")
+    if param_declarations is None:
+        return None
+
+    for param_declaration in param_declarations:
+        current_name = param_declaration.get("name")
+        current_value = param_declaration.get("value")
+        if (
+            current_name is not None
+            and current_value is not None
+            and current_name == parameter_name
+        ):
+            return current_value
+
+    return None
+
+
 def get_xodr_road_network(root: etree._ElementTree) -> Union[etree._ElementTree, None]:
     """Get parsed xodr tree indicated in the RoadNetwork/LogicFile node of the input root
 
@@ -62,4 +91,13 @@ def get_xodr_road_network(root: etree._ElementTree) -> Union[etree._ElementTree,
     filepath = logic_file.get("filepath")
     if filepath is None:
         return None
+
+    # If filepath is specified using param, get all param declaration and update the filepath
+    if filepath.startswith("$"):
+
+        filepath_param = filepath[1:]
+        filepath = get_parameter_value(root, filepath_param)
+        if filepath is None:
+            return None
+
     return etree.parse(filepath)
