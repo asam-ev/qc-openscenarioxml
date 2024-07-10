@@ -43,6 +43,35 @@ def compare_versions(version1: str, version2: str) -> int:
         return 0
 
 
+def get_parameter_value(
+    root: etree._ElementTree, parameter_name: str
+) -> Union[None, str]:
+    """_summary_
+
+    Args:
+        root (etree._ElementTree): _description_
+        parameter (str): _description_
+
+    Returns:
+        Union[None, str]: _description_
+    """
+    param_declarations = root.findall(".//ParameterDeclaration")
+    if param_declarations is None:
+        return None
+
+    for param_declaration in param_declarations:
+        current_name = param_declaration.get("name")
+        current_value = param_declaration.get("value")
+        if (
+            current_name is not None
+            and current_value is not None
+            and current_name == parameter_name
+        ):
+            return current_value
+
+    return None
+
+
 def get_xodr_road_network(root: etree._ElementTree) -> Union[etree._ElementTree, None]:
     """Get parsed xodr tree indicated in the RoadNetwork/LogicFile node of the input root
 
@@ -67,21 +96,8 @@ def get_xodr_road_network(root: etree._ElementTree) -> Union[etree._ElementTree,
     if filepath.startswith("$"):
 
         filepath_param = filepath[1:]
-        param_declarations = root.findall(".//ParameterDeclaration")
-        if param_declarations is None:
+        filepath = get_parameter_value(root, filepath_param)
+        if filepath is None:
             return None
-
-        param_dict = dict()
-
-        for param_declaration in param_declarations:
-            current_name = param_declaration.get("name")
-            current_value = param_declaration.get("value")
-            if current_name is not None and current_value is not None:
-                param_dict[current_name] = current_value
-
-        if filepath_param not in param_dict:
-            return None
-
-        filepath = param_dict[filepath_param]
 
     return etree.parse(filepath)
