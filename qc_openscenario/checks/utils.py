@@ -45,15 +45,15 @@ def compare_versions(version1: str, version2: str) -> int:
 
 def get_parameter_value(
     root: etree._ElementTree, parameter_name: str
-) -> Union[None, str]:
-    """_summary_
+) -> Union[None, str, int, float]:
+    """Read all ParameterDeclaration nodes from root and get the value of parameter_name if present
 
     Args:
-        root (etree._ElementTree): _description_
-        parameter (str): _description_
+        root (etree._ElementTree): root node of the xml document
+        parameter_name (str): the parameter name to search
 
     Returns:
-        Union[None, str]: _description_
+        Union[None, str, int, float]: the parameter value is present, with its type. None if the parameter_name is not found
     """
     param_declarations = root.findall(".//ParameterDeclaration")
     if param_declarations is None:
