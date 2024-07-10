@@ -62,19 +62,18 @@ def check_rule(checker_data: models.CheckerData) -> None:
         logging.error("Cannot find Catalog nodes in provided XOSC file. Skipping check")
         return
 
-    print("catalogs_node : ", catalogs_node)
+    logging.debug(f"catalogs_node : {catalogs_node}")
 
     for catalog_node in catalogs_node:
 
         parameter_declaration_nodes = catalog_node.find(".//ParameterDeclarations")
-        print("parameter_declaration_nodes : ", parameter_declaration_nodes)
+        logging.debug(f"parameter_declaration_nodes : {parameter_declaration_nodes}")
         # Get parameters declarations and check if they have default value
         defined_parameters_with_default = set()
         if parameter_declaration_nodes is not None:
             for declaration_node in list(parameter_declaration_nodes):
                 current_name = declaration_node.get("name")
                 current_default_value = declaration_node.get("value")
-                print("current_default_value : ", current_default_value)
 
                 if (
                     current_name is not None
@@ -83,11 +82,16 @@ def check_rule(checker_data: models.CheckerData) -> None:
                 ):
                     defined_parameters_with_default.add(current_name)
 
-        xpath_expr = './/*[starts-with(@*, "$")]'
+        # Expression selecting when a node attribute value starts with $, indicating a parameter usage
+        xpath_expr = './/*[@*[starts-with(., "$")]]'
 
-        print("defined_parameters_with_default: ", defined_parameters_with_default)
+        logging.debug(
+            f"defined_parameters_with_default: {defined_parameters_with_default}"
+        )
         nodes_with_parameters_attributes = catalog_node.xpath(xpath_expr)
-        print("nodes_with_parameters_attributes: ", nodes_with_parameters_attributes)
+        logging.debug(
+            f"nodes_with_parameters_attributes: {nodes_with_parameters_attributes}"
+        )
 
         for node_with_parameter_attribute in nodes_with_parameters_attributes:
             xpath = root.getpath(node_with_parameter_attribute)
@@ -110,5 +114,5 @@ def check_rule(checker_data: models.CheckerData) -> None:
                         checker_id=parameters_constants.CHECKER_ID,
                         issue_id=issue_id,
                         xpath=xpath,
-                        description=f"Parameter {attr_value[1:]} for attribute {attr_name}  not defined in Catalog or with no default value",
+                        description=f"Parameter value {attr_value[1:]} for attribute {attr_name} not defined in Catalog or with no default value",
                     )
