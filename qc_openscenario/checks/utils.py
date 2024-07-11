@@ -1,5 +1,5 @@
 from lxml import etree
-from typing import Union
+from typing import Union, Dict
 from qc_openscenario.checks import models
 import re
 
@@ -48,46 +48,49 @@ def compare_versions(version1: str, version2: str) -> int:
         return 0
 
 
-def get_parameter_value(
-    root: etree._ElementTree, parameter_name: str
+def get_parameter_value_from_node(
+    tree: etree._ElementTree, node: etree._Element, parameter_name: str
 ) -> Union[None, str, int, float]:
-    """Read all ParameterDeclaration nodes from root and get the value of parameter_name if present
+    """Read all ParameterDeclaration visible from node and get the value of parameter_name if present
 
     Args:
         root (etree._ElementTree): root node of the xml document
+        node (etree._Element): node to start the upward search from
         parameter_name (str): the parameter name to search
 
     Returns:
         Union[None, str, int, float]: the parameter value is present, with its type. None if the parameter_name is not found
     """
-    param_declarations = root.findall(".//ParameterDeclaration")
-    if param_declarations is None:
+    # Dictionary to hold parameters
+    params_dict = {}
+    parameter_xpath = "./ParameterDeclarations/ParameterDeclaration"
+
+    current = node
+    while current is not None:
+        for param in current.xpath(parameter_xpath):
+            name = param.get("name")
+            value = param.get("value")
+            if name not in params_dict:
+                params_dict[name] = value
+        current = current.getparent()
+
+    if parameter_name in params_dict:
+        return params_dict[parameter_name]
+    else:
         return None
 
-    for param_declaration in param_declarations:
-        current_name = param_declaration.get("name")
-        current_value = param_declaration.get("value")
-        if (
-            current_name is not None
-            and current_value is not None
-            and current_name == parameter_name
-        ):
-            return current_value
 
-    return None
-
-
-def get_xodr_road_network(root: etree._ElementTree) -> Union[etree._ElementTree, None]:
-    """Get parsed xodr tree indicated in the RoadNetwork/LogicFile node of the input root
+def get_xodr_road_network(tree: etree._ElementTree) -> Union[etree._ElementTree, None]:
+    """Get parsed xodr tree indicated in the RoadNetwork/LogicFile node of the input tree
 
     Args:
-        root (etree._ElementTree): root node of the xml document that refers to a xodr file
+        tree (etree._ElementTree): xml document tree that refers to a xodr file
 
     Returns:
         Union[etree._ElementTree, None]: the parsed road network tree.
                                          None if the specified nodes in the root or the road network file are not found
     """
-    road_network = root.find("RoadNetwork")
+    road_network = tree.find("RoadNetwork")
     if road_network is None:
         return None
     logic_file = road_network.find("LogicFile")
@@ -100,7 +103,7 @@ def get_xodr_road_network(root: etree._ElementTree) -> Union[etree._ElementTree,
     # If filepath is specified using param, get all param declaration and update the filepath
     if get_attribute_type(filepath) == models.AttributeType.PARAMETER:
         filepath_param = filepath[1:]
-        filepath = get_parameter_value(root, filepath_param)
+        filepath = get_parameter_value_from_node(tree, tree.getroot(), filepath_param)
         if filepath is None:
             return None
 
