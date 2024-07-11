@@ -1,5 +1,5 @@
 from lxml import etree
-from typing import Union, Dict
+from typing import Union
 from qc_openscenario.checks import models
 import re
 
