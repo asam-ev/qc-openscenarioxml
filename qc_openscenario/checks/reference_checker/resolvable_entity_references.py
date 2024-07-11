@@ -87,7 +87,10 @@ def check_rule(checker_data: models.CheckerData) -> None:
         has_issue = False
 
         # Check if entityRef points to a declared param
-        if current_entity_ref.startswith("$"):
+        if (
+            utils.get_attribute_type(current_entity_ref)
+            == utils.AttributeType.PARAMETER
+        ):
             current_entity_param_name = current_entity_ref[1:]
             current_entity_param_value = utils.get_parameter_value(
                 root, current_entity_param_name

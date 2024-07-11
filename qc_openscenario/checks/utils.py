@@ -1,5 +1,16 @@
 from lxml import etree
 from typing import Union
+from enum import Enum
+import re
+
+EXPRESSION_PATTERN = re.compile("[$][{][ A-Za-z0-9_\+\-\*/%$\(\)\.,]*[\}]")
+PARAMETER_PATTERN = re.compile("[$][A-Za-z_][A-Za-z0-9_]*")
+
+
+class AttributeType(Enum):
+    STRING = 0
+    EXPRESSION = 1
+    PARAMETER = 2
 
 
 def get_standard_schema_version(root: etree._ElementTree) -> Union[str, None]:
@@ -93,11 +104,31 @@ def get_xodr_road_network(root: etree._ElementTree) -> Union[etree._ElementTree,
         return None
 
     # If filepath is specified using param, get all param declaration and update the filepath
-    if filepath.startswith("$"):
-
+    if get_attribute_type(filepath) == AttributeType.PARAMETER:
         filepath_param = filepath[1:]
         filepath = get_parameter_value(root, filepath_param)
         if filepath is None:
             return None
 
     return etree.parse(filepath)
+
+
+def get_attribute_type(attribute_value: str) -> AttributeType:
+    """Given attribute value as input, checks if it is an expression, a parameter or a plain string
+
+    Args:
+        attribute_value (str): the attribute value to check
+
+    Returns:
+        AttributeType: enum representing whether attribute value is
+            - expression (AttributeType.EXPRESSION),
+            - parameter (AttributeType.PARAMETER)
+            - a plain string (AttributeType.STRING)
+    """
+
+    if EXPRESSION_PATTERN.match(attribute_value):
+        return AttributeType.EXPRESSION
+    elif PARAMETER_PATTERN.match(attribute_value):
+        return AttributeType.PARAMETER
+
+    return AttributeType.STRING
