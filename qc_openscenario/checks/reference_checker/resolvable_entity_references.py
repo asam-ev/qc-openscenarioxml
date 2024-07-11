@@ -79,20 +79,28 @@ def check_rule(checker_data: models.CheckerData) -> None:
     nodes_with_entity_ref = storyboard_node.xpath(".//*[@entityRef]")
 
     for node_with_entity_ref in nodes_with_entity_ref:
-        current_name = node_with_entity_ref.get("entityRef")
+        current_entity_ref = node_with_entity_ref.get("entityRef")
 
-        if current_name is None:
+        if current_entity_ref is None:
             continue
 
         has_issue = False
-        if current_name.startswith("$"):
-            current_name_param = current_name[1:]
-            current_name_value = utils.get_parameter_value(root, current_name_param)
-            logging.debug(f"current_name_param: {current_name_param}")
-            logging.debug(f"current_name_value: {current_name_value}")
-            has_issue = current_name_value is None
-        else:
-            has_issue = current_name not in defined_entities
+
+        # Check if entityRef points to a declared param
+        if current_entity_ref.startswith("$"):
+            current_entity_param_name = current_entity_ref[1:]
+            current_entity_param_value = utils.get_parameter_value(
+                root, current_entity_param_name
+            )
+            logging.debug(f"current_entity_param_name: {current_entity_param_name}")
+            logging.debug(f"current_entity_param_value: {current_entity_param_value}")
+            # Parameter value is assigned to the current_entity_ref to search
+            # If parameter is not found, None is assigned to current_entity_ref
+            current_entity_ref = current_entity_param_value
+
+        has_issue = (
+            current_entity_ref is None or current_entity_ref not in defined_entities
+        )
 
         if has_issue:
             xpath = root.getpath(node_with_entity_ref)
@@ -109,5 +117,5 @@ def check_rule(checker_data: models.CheckerData) -> None:
                 checker_id=reference_constants.CHECKER_ID,
                 issue_id=issue_id,
                 xpath=xpath,
-                description=f"Entity at {xpath} with id {current_name} not found among defined Entities ",
+                description=f"Entity at {xpath} with id {current_entity_ref} not found among defined Entities ",
             )
