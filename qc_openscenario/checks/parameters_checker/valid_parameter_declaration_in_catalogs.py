@@ -98,7 +98,8 @@ def check_rule(checker_data: models.CheckerData) -> None:
 
             for attr_name, attr_value in node_with_parameter_attribute.attrib.items():
                 if (
-                    attr_value.startswith("$")
+                    utils.get_attribute_type(attr_value)
+                    == models.AttributeType.PARAMETER
                     and attr_value[1:] not in defined_parameters_with_default
                 ):
 

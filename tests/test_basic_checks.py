@@ -84,3 +84,21 @@ def test_parametric_entity_ref(
 
     assert result.get_issue_count() == 0
     test_utils.cleanup_files()
+
+
+def test_parameter_declaration_with_expression(
+    monkeypatch,
+) -> None:
+    base_path = "tests/data/parameter_declaration_with_expression/"
+    target_file_name = f"VehicleCatalog.xosc"
+    target_file_path = os.path.join(base_path, target_file_name)
+
+    test_utils.create_test_config(target_file_path)
+
+    test_utils.launch_main(monkeypatch)
+
+    result = Result()
+    result.load_from_file(test_utils.REPORT_FILE_PATH)
+
+    assert result.get_issue_count() == 0
+    test_utils.cleanup_files()
