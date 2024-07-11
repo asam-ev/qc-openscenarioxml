@@ -66,3 +66,21 @@ def test_parametric_input_xodr(
 
     assert result.get_issue_count() == 0
     test_utils.cleanup_files()
+
+
+def test_parametric_entity_ref(
+    monkeypatch,
+) -> None:
+    base_path = "tests/data/parametric_entity_ref/"
+    target_file_name = f"CutIn.xosc"
+    target_file_path = os.path.join(base_path, target_file_name)
+
+    test_utils.create_test_config(target_file_path)
+
+    test_utils.launch_main(monkeypatch)
+
+    result = Result()
+    result.load_from_file(test_utils.REPORT_FILE_PATH)
+
+    assert result.get_issue_count() == 0
+    test_utils.cleanup_files()
