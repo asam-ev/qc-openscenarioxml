@@ -92,8 +92,8 @@ def check_rule(checker_data: models.CheckerData) -> None:
             == models.AttributeType.PARAMETER
         ):
             current_entity_param_name = current_entity_ref[1:]
-            current_entity_param_value = utils.get_parameter_value(
-                root, current_entity_param_name
+            current_entity_param_value = utils.get_parameter_value_from_node(
+                root, node_with_entity_ref, current_entity_param_name
             )
             logging.debug(f"current_entity_param_name: {current_entity_param_name}")
             logging.debug(f"current_entity_param_value: {current_entity_param_value}")
