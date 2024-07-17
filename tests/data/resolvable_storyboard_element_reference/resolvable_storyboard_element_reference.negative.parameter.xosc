@@ -65,6 +65,7 @@
                   <Condition name="Initalize_Speed_Condition" conditionEdge="none"
                     delay="0.0000000000000000e+00">
                     <ByValueCondition>
+                      <!-- Inserted rule violation since "ParamAct" points to an undefined Act -->
                       <StoryboardElementStateCondition storyboardElementType="act"
                         storyboardElementRef="$ParamAct" state="runningState" />
                     </ByValueCondition>

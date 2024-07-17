@@ -59,6 +59,8 @@
                 </PrivateAction>
               </Action>
             </Event>
+            <!-- Inserted rule violation since "Event222" is also used in the previous event at same
+            level -->
             <Event name="Event222" priority="parallel">
               <Action name="Change_Vehicle_Speed">
                 <PrivateAction>
@@ -98,6 +100,7 @@
         <StopTrigger />
       </Act>
     </Story>
+    <!-- Inserted rule violation since "Story1" is also used in the previous story at same level -->
     <Story name="Story1">
       <Act name="Act1">
         <ManeuverGroup name="ManuverGroup1" maximumExecutionCount="1">
@@ -120,6 +123,8 @@
                 </PrivateAction>
               </Action>
             </Event>
+            <!-- Inserted rule violation since "Event1" is also used in the previous event at same
+            level -->
             <Event name="Event1" priority="parallel">
               <Action name="Change_Vehicle_Speed">
                 <PrivateAction>
