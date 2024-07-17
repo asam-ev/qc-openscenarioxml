@@ -1,7 +1,7 @@
 import os, logging
 
 from dataclasses import dataclass
-from typing import List
+from typing import List, Union
 
 from lxml import etree
 
@@ -18,29 +18,43 @@ MIN_RULE_VERSION = "1.2.0"
 RULE_SEVERITY = IssueSeverity.ERROR
 
 
-def are_names_unique_at_each_level(tree, root):
+@dataclass
+class QueueNode:
+    element: etree._ElementTree
+    parent_xpath: Union[str, None]
+
+
+@dataclass
+class DuplicateOccurrence:
+    name: str
+    xpath: str
+
+
+def are_names_unique_at_each_level(tree: etree._ElementTree, root: etree._Element):
     # Initialize a queue for breadth-first traversal
-    queue = deque([(root, None)])
+    queue = deque([QueueNode(root, None)])
     levels_dict = defaultdict(set)
 
     duplicates = []
 
     while queue:
-        element, parent = queue.popleft()
+        queue_node = queue.popleft()
 
-        name = element.get("name")
-
+        current_element = queue_node.element
+        current_name = current_element.get("name")
+        parent_xpath = queue_node.parent_xpath
+        current_xpath = tree.getpath(current_element)
         # Check if the element has a 'name' attribute
-        if name is not None:
+        if current_name is not None:
             # Check for duplicate names at the current level
-            if name in levels_dict[parent]:
-                logging.debug(f"Duplicated name found : {name}")
-                duplicates.append((name, tree.getpath(element)))
-            levels_dict[parent].add(name)
+            if current_name in levels_dict[parent_xpath]:
+                logging.debug(f"Duplicated name found : {current_name}")
+                duplicates.append(DuplicateOccurrence(current_name, current_xpath))
+            levels_dict[parent_xpath].add(current_name)
 
         # Add children to the stack with incremented level
-        for child in element.getchildren():
-            queue.append((child, element))
+        for child in current_element.getchildren():
+            queue.append(QueueNode(child, current_xpath))
 
     return duplicates
 
@@ -97,11 +111,11 @@ def check_rule(checker_data: models.CheckerData) -> None:
             level=RULE_SEVERITY,
             rule_uid=rule_uid,
         )
-        issue_description = f"Element {duplicate[0]} is duplicated"
+        issue_description = f"Element {duplicate.name} is duplicated"
         checker_data.result.add_xml_location(
             checker_bundle_name=constants.BUNDLE_NAME,
             checker_id=reference_constants.CHECKER_ID,
             issue_id=issue_id,
-            xpath=duplicate[1],
+            xpath=duplicate.xpath,
             description=issue_description,
         )
