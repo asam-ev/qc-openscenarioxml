@@ -74,13 +74,24 @@ def check_rule(checker_data: models.CheckerData) -> None:
         )
         return
 
-    storyboard_element_names = set()
+    storyboard_element_type = {}
+    storyboard_element_occurrences = {}
+    # Store storyboard elements along with
+    # - their type (for type matching)
+    # - number of occurrences (for unique resolution)
     for storyboard_element in list(storyboard_elements):
         current_name = storyboard_element.get("name")
+        current_type = storyboard_element.tag
         if current_name is not None:
-            storyboard_element_names.add(current_name)
+            if current_name not in storyboard_element_occurrences:
+                storyboard_element_occurrences[current_name] = 1
+            else:
+                storyboard_element_occurrences[current_name] += 1
 
-    logging.debug(f"storyboard_element_names: {storyboard_element_names}")
+            storyboard_element_type[current_name] = current_type
+
+    logging.debug(f"storyboard_element_type_dict: {storyboard_element_type}")
+    logging.debug(f"storyboard_element_occurrences: {storyboard_element_occurrences}")
 
     nodes_with_storyboard_el_ref = storyboard_node.xpath(".//*[@storyboardElementRef]")
 
@@ -88,7 +99,11 @@ def check_rule(checker_data: models.CheckerData) -> None:
         current_storyboard_el_ref = node_with_storyboard_el_ref.get(
             "storyboardElementRef"
         )
+        current_storyboard_type = node_with_storyboard_el_ref.get(
+            "storyboardElementType"
+        )
         logging.debug(f"current_storyboard_el_ref: {current_storyboard_el_ref}")
+        logging.debug(f"current_storyboard_type: {current_storyboard_type}")
 
         # Check if entityRef points to a declared param
         if (
@@ -105,12 +120,19 @@ def check_rule(checker_data: models.CheckerData) -> None:
             # If parameter is not found, None is assigned to current_storyboard_el_ref
             current_storyboard_el_ref = current_entity_param_value
 
-        has_issue = (
-            current_storyboard_el_ref is None
-            or current_storyboard_el_ref not in storyboard_element_names
+        is_valid = (
+            # Is found or its parameter can be resolved
+            current_storyboard_el_ref is not None
+            # Is found among storyboard elements
+            and current_storyboard_el_ref in storyboard_element_occurrences
+            # Is uniquely resolvable
+            and storyboard_element_occurrences[current_storyboard_el_ref] == 1
+            # Type matches
+            and storyboard_element_type[current_storyboard_el_ref].lower()
+            == current_storyboard_type
         )
 
-        if has_issue:
+        if not is_valid:
             xpath = root.getpath(node_with_storyboard_el_ref)
 
             issue_id = checker_data.result.register_issue(

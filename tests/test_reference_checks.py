@@ -655,8 +655,12 @@ def test_resolvable_storyboard_element_reference_negative(
     reference_issues = result.get_issues_by_rule_uid(
         "asam.net:xosc:1.2.0:reference_control.resolvable_storyboard_element_reference"
     )
-    assert len(reference_issues) == 1
+    assert len(reference_issues) == 2
     assert reference_issues[0].level == IssueSeverity.ERROR
+    assert reference_issues[1].level == IssueSeverity.ERROR
+    assert "Act2" in reference_issues[0].locations[0].description
+    assert "Act1" in reference_issues[1].locations[0].description
+
     test_utils.cleanup_files()
 
 

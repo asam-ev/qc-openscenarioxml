@@ -92,7 +92,7 @@
                   <Condition name="Change_Speed_Condition" conditionEdge="none"
                     delay="0.0000000000000000e+00">
                     <ByValueCondition>
-                      <StoryboardElementStateCondition storyboardElementType="event"
+                      <StoryboardElementStateCondition storyboardElementType="act"
                         storyboardElementRef="Act1" state="completeState" />
                     </ByValueCondition>
                   </Condition>

@@ -26,10 +26,7 @@ def are_names_unique_at_each_level(tree, root):
     duplicates = []
 
     while queue:
-        logging.debug(f"queue {queue}")
-        logging.debug(f"levels_dict {levels_dict}")
         element, parent = queue.popleft()
-        logging.debug(f"{element} - parent {parent}")
 
         name = element.get("name")
 

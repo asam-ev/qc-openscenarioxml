@@ -90,6 +90,8 @@
                   <Condition name="Change_Speed_Condition" conditionEdge="none"
                     delay="0.0000000000000000e+00">
                     <ByValueCondition>
+                      <!-- Inserted rule violation since "Act1" is of type Act while here is defined
+                      as event -->
                       <StoryboardElementStateCondition storyboardElementType="event"
                         storyboardElementRef="Act1" state="completeState" />
                     </ByValueCondition>
