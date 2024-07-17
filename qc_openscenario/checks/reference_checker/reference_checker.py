@@ -15,6 +15,8 @@ from qc_openscenario.checks.reference_checker import (
     valid_actor_reference_in_private_actions,
     resolvable_entity_references,
     resolvable_variable_reference,
+    resolvable_storyboard_element_reference,
+    unique_element_names_on_same_level,
 )
 
 
@@ -62,6 +64,8 @@ def run_checks(checker_data: models.CheckerData) -> None:
         valid_actor_reference_in_private_actions.check_rule,
         resolvable_entity_references.check_rule,
         resolvable_variable_reference.check_rule,
+        resolvable_storyboard_element_reference.check_rule,
+        unique_element_names_on_same_level.check_rule,
     ]
 
     for rule in rule_list:

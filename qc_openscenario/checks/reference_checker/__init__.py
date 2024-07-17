@@ -14,3 +14,7 @@ from . import (
 )
 from . import resolvable_entity_references as resolvable_entity_references
 from . import resolvable_variable_reference as resolvable_variable_reference
+from . import (
+    resolvable_storyboard_element_reference as resolvable_storyboard_element_reference,
+)
+from . import unique_element_names_on_same_level as unique_element_names_on_same_level
