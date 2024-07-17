@@ -1,7 +1,7 @@
 import os, logging
 
 from dataclasses import dataclass
-from typing import List
+from typing import List, Union
 
 from lxml import etree
 
@@ -35,28 +35,48 @@ ALLOWED_OPERANDS = [
 ]
 
 
-def get_all_attributes(tree, root):
+@dataclass
+class QueueNode:
+    element: etree._ElementTree
+    xpath: Union[str, None]
+
+
+@dataclass
+class AttributeInfo:
+    name: str
+    value: str
+    xpath: str
+
+
+def get_all_attributes(tree: etree._ElementTree, root: etree._ElementTree):
     attributes = []
-    stack = [root]  # Initialize stack with the root element
+    stack = [
+        QueueNode(root, tree.getpath(root))
+    ]  # Initialize stack with the root element
 
     while stack:
-        current = stack.pop()
+        current_node = stack.pop()
+        current_element = current_node.element
+        current_xpath = current_node.xpath
 
         # Process attributes of the current element
-        for attr, value in current.attrib.items():
-            attributes.append((attr, value, tree.getpath(current)))
+        for attr, value in current_element.attrib.items():
+            attributes.append(AttributeInfo(attr, value, current_xpath))
 
         # Push children to the stack for further processing
-        stack.extend(reversed(current.getchildren()))
+        stack.extend(
+            reversed(
+                [QueueNode(x, tree.getpath(x)) for x in current_element.getchildren()]
+            )
+        )
 
     return attributes
 
 
 def filter_expressions(attribute):
-    _, attr_value, _ = attribute
     return (
-        attr_value.startswith("$")
-        and utils.get_attribute_type(attr_value) != models.AttributeType.PARAMETER
+        attribute.value.startswith("$")
+        and utils.get_attribute_type(attribute.value) != models.AttributeType.PARAMETER
     )
 
 
@@ -107,7 +127,7 @@ def check_rule(checker_data: models.CheckerData) -> None:
     logging.debug(f"filtered_attributes: {filtered_attributes}")
 
     for attribute in filtered_attributes:
-        expression_candidate = attribute[1][2:-1]
+        expression_candidate = attribute.value[2:-1]
         logging.debug(f"expression_candidate: {expression_candidate}")
         # Define the regex pattern to match digits and allowed chars ( ) . and ,
         pattern = r"[\d()., ]+"
@@ -122,7 +142,7 @@ def check_rule(checker_data: models.CheckerData) -> None:
             has_issue = operand not in ALLOWED_OPERANDS
             if has_issue:
                 logging.debug(f"Invalid operand {operand}")
-                xpath = attribute[2]
+                xpath = attribute.xpath
 
                 issue_id = checker_data.result.register_issue(
                     checker_bundle_name=constants.BUNDLE_NAME,
