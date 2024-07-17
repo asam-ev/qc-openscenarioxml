@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSCENARIO xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <FileHeader revMajor="1" revMinor="2" date="2020-02-21T10:00:00"
+        description="Test allowed operators"
+        author="ASAM e.V." />
+    <ParameterDeclarations />
+    <CatalogLocations />
+    <RoadNetwork />
+    <Entities />
+    <Storyboard>
+        <Init>
+            <Actions>
+                <Private entityRef="${round(1.3) % ceil(1.23) - sqrt(18.23) +7-321/65.32">
+                    <PrivateAction>
+                        <AppearanceAction>
+                            <!-- "powerer" not supported operation in expression -->
+                            <LightStateAction transitionTime="${1 and 1}">
+                                <LightType>
+                                    <VehicleLight vehicleLightType="${1 or 0 and not 1}" />
+                                </LightType>
+                                <LightState mode="${pow(2, 3)}" />
+                            </LightStateAction>
+                        </AppearanceAction>
+                    </PrivateAction>
+                </Private>
+            </Actions>
+        </Init>
+    </Storyboard>
+</OpenSCENARIO>
