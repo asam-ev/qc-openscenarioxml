@@ -1,0 +1,2 @@
+BUNDLE_NAME = "xoscBundle"
+BUNDLE_VERSION = "0.1.0"
