@@ -48,7 +48,7 @@ class AttributeInfo:
     xpath: str
 
 
-def get_all_attributes(tree: etree._ElementTree, root: etree._ElementTree):
+def get_all_attributes(tree: etree._ElementTree, root: etree._Element):
     attributes = []
     stack = [
         QueueNode(root, tree.getpath(root))
