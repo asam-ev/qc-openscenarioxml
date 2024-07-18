@@ -127,18 +127,19 @@ def check_rule(checker_data: models.CheckerData) -> None:
     logging.debug(f"filtered_attributes: {filtered_attributes}")
 
     for attribute in filtered_attributes:
+        # Remove starting "${" and trailing "}"
         expression_candidate = attribute.value[2:-1]
         logging.debug(f"expression_candidate: {expression_candidate}")
         # Define the regex pattern to match digits and allowed chars ( ) . and ,
         pattern = r"[\d()., ]+"
         # Split the input string based on the regex pattern
-        operands_candidates = re.split(pattern, expression_candidate)
+        operand_candidates = re.split(pattern, expression_candidate)
         # Filter out empty strings from the resulting list
-        operands_candidates = [
-            part for part in operands_candidates if part and part != "" and part != " "
+        operand_candidates = [
+            part for part in operand_candidates if part and part != "" and part != " "
         ]
 
-        for operand in operands_candidates:
+        for operand in operand_candidates:
             has_issue = operand not in ALLOWED_OPERANDS
             if has_issue:
                 logging.debug(f"Invalid operand {operand}")

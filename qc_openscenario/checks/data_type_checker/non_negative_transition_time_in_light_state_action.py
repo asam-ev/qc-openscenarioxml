@@ -86,6 +86,7 @@ def check_rule(checker_data: models.CheckerData) -> None:
             if current_transition_param_value is None:
                 continue
             current_transition_time = current_transition_param_value
+        # Case of incomplete expression to skip
         if (
             current_transition_type == models.AttributeType.VALUE
             and current_transition_time.startswith("$")
