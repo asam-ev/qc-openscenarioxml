@@ -79,8 +79,8 @@ def check_rule(checker_data: models.CheckerData) -> None:
             logging.debug(
                 f"current_duration_param_value: {current_duration_param_value}"
             )
-            # Parameter value is assigned to the current_transition_time to search
-            # If parameter is not found, None is assigned to current_storyboard_el_ref
+            # Parameter value is assigned to the current_duration to search
+            # If parameter is not found, None is assigned to current_duration
             if current_duration_param_value is None:
                 continue
             current_duration = current_duration_param_value

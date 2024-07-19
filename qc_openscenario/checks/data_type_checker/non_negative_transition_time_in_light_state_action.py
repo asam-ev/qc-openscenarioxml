@@ -82,7 +82,7 @@ def check_rule(checker_data: models.CheckerData) -> None:
                 f"current_transition_param_name: {current_transition_param_name}"
             )
             # Parameter value is assigned to the current_transition_time to search
-            # If parameter is not found, None is assigned to current_storyboard_el_ref
+            # If parameter is not found, None is assigned to current_transition_time
             if current_transition_param_value is None:
                 continue
             current_transition_time = current_transition_param_value
