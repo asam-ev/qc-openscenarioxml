@@ -9,6 +9,7 @@ from qc_openscenario.checks.schema_checker import schema_checker
 from qc_openscenario.checks.basic_checker import basic_checker
 from qc_openscenario.checks.reference_checker import reference_checker
 from qc_openscenario.checks.parameters_checker import parameters_checker
+from qc_openscenario.checks.data_type_checker import data_type_checker
 
 logging.basicConfig(format="%(asctime)s - %(message)s", level=logging.INFO)
 
@@ -58,6 +59,9 @@ def main():
 
         # 4. Run parameters checks
         parameters_checker.run_checks(checker_data)
+
+        # 5. Run data_type checks
+        data_type_checker.run_checks(checker_data)
 
         result.write_to_file(
             config.get_checker_bundle_param(
