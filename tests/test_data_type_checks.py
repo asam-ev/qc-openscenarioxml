@@ -32,6 +32,32 @@ def test_positive_duration_in_phase_positive(
     test_utils.cleanup_files()
 
 
+def test_positive_duration_in_phase_positive_parameter(
+    monkeypatch,
+) -> None:
+    base_path = "tests/data/positive_duration_in_phase/"
+    target_file_name = f"positive_example.parameter.xosc"
+    target_file_path = os.path.join(base_path, target_file_name)
+
+    test_utils.create_test_config(target_file_path)
+
+    test_utils.launch_main(monkeypatch)
+
+    result = Result()
+    result.load_from_file(test_utils.REPORT_FILE_PATH)
+
+    assert (
+        len(
+            result.get_issues_by_rule_uid(
+                "asam.net:xosc:1.2.0:data_type.positive_duration_in_phase"
+            )
+        )
+        == 0
+    )
+
+    test_utils.cleanup_files()
+
+
 def test_positive_duration_in_phase_negative(
     monkeypatch,
 ) -> None:
@@ -59,11 +85,64 @@ def test_positive_duration_in_phase_negative(
     test_utils.cleanup_files()
 
 
+def test_positive_duration_in_phase_negative_parameter(
+    monkeypatch,
+) -> None:
+    base_path = "tests/data/positive_duration_in_phase/"
+    target_file_name = f"negative_example.parameter.xosc"
+    target_file_path = os.path.join(base_path, target_file_name)
+
+    test_utils.create_test_config(target_file_path)
+
+    test_utils.launch_main(monkeypatch)
+
+    result = Result()
+    result.load_from_file(test_utils.REPORT_FILE_PATH)
+
+    _ = result.get_checker_result(
+        checker_bundle_name=constants.BUNDLE_NAME,
+        checker_id=data_type_constants.CHECKER_ID,
+    )
+
+    data_type_issues = result.get_issues_by_rule_uid(
+        "asam.net:xosc:1.2.0:data_type.positive_duration_in_phase"
+    )
+    assert len(data_type_issues) == 1
+    assert data_type_issues[0].level == IssueSeverity.ERROR
+    test_utils.cleanup_files()
+
+
 def test_allowed_operators_positive(
     monkeypatch,
 ) -> None:
     base_path = "tests/data/allowed_operators/"
     target_file_name = f"positive_example.xosc"
+    target_file_path = os.path.join(base_path, target_file_name)
+
+    test_utils.create_test_config(target_file_path)
+
+    test_utils.launch_main(monkeypatch)
+
+    result = Result()
+    result.load_from_file(test_utils.REPORT_FILE_PATH)
+
+    assert (
+        len(
+            result.get_issues_by_rule_uid(
+                "asam.net:xosc:1.2.0:data_type.allowed_operators"
+            )
+        )
+        == 0
+    )
+
+    test_utils.cleanup_files()
+
+
+def test_allowed_operators_positive_param(
+    monkeypatch,
+) -> None:
+    base_path = "tests/data/allowed_operators/"
+    target_file_name = f"positive_example.param.xosc"
     target_file_path = os.path.join(base_path, target_file_name)
 
     test_utils.create_test_config(target_file_path)

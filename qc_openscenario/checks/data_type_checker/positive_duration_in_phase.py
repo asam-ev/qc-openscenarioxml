@@ -61,6 +61,30 @@ def check_rule(checker_data: models.CheckerData) -> None:
     for phase_node in phase_nodes:
         current_duration = phase_node.get("duration")
         logging.debug(f"current_duration: {current_duration}")
+        current_duration_type = utils.get_attribute_type(current_duration)
+
+        if current_duration is None:
+            continue
+        if current_duration_type == models.AttributeType.EXPRESSION:
+            logging.debug(
+                f"Skipping duration with value {current_duration} since sign cannot be evaluated "
+            )
+            continue
+        if current_duration_type == models.AttributeType.PARAMETER:
+            current_duration_param_name = current_duration[1:]
+            current_duration_param_value = utils.get_parameter_value_from_node(
+                root, phase_node, current_duration_param_name
+            )
+            logging.debug(f"current_duration_param_name: {current_duration_param_name}")
+            logging.debug(
+                f"current_duration_param_value: {current_duration_param_value}"
+            )
+            # Parameter value is assigned to the current_transition_time to search
+            # If parameter is not found, None is assigned to current_storyboard_el_ref
+            if current_duration_param_value is None:
+                continue
+            current_duration = current_duration_param_value
+
         current_numeric_value = float(current_duration)
         has_issue = current_numeric_value < 0
 

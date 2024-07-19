@@ -17,22 +17,21 @@ import re
 
 MIN_RULE_VERSION = "1.2.0"
 RULE_SEVERITY = IssueSeverity.ERROR
-ALLOWED_OPERANDS = [
-    "-",
-    "round",
-    "floor",
-    "ceil",
-    "sqrt",
-    "pow",
-    "*",
-    "/",
-    "%",
-    "+",
-    "-",
-    "not",
-    "and",
-    "or",
-]
+ALLOWED_OPERANDS = set()
+ALLOWED_OPERANDS.add("-")
+ALLOWED_OPERANDS.add("round")
+ALLOWED_OPERANDS.add("floor")
+ALLOWED_OPERANDS.add("ceil")
+ALLOWED_OPERANDS.add("sqrt")
+ALLOWED_OPERANDS.add("pow")
+ALLOWED_OPERANDS.add("*")
+ALLOWED_OPERANDS.add("/")
+ALLOWED_OPERANDS.add("%")
+ALLOWED_OPERANDS.add("+")
+ALLOWED_OPERANDS.add("-")
+ALLOWED_OPERANDS.add("not")
+ALLOWED_OPERANDS.add("and")
+ALLOWED_OPERANDS.add("or")
 
 
 @dataclass
@@ -136,9 +135,11 @@ def check_rule(checker_data: models.CheckerData) -> None:
         operand_candidates = re.split(pattern, expression_candidate)
         # Filter out empty strings from the resulting list
         operand_candidates = [
-            part for part in operand_candidates if part and part != "" and part != " "
+            part
+            for part in operand_candidates
+            if part and part != "" and part != " " and not part.startswith("$")
         ]
-
+        logging.debug(f"operand candidates : {operand_candidates}")
         for operand in operand_candidates:
             has_issue = operand not in ALLOWED_OPERANDS
             if has_issue:
@@ -148,7 +149,7 @@ def check_rule(checker_data: models.CheckerData) -> None:
                 issue_id = checker_data.result.register_issue(
                     checker_bundle_name=constants.BUNDLE_NAME,
                     checker_id=data_type_constants.CHECKER_ID,
-                    description="Issue flagging invalid operand is used within expession",
+                    description="Issue flagging invalid operand is used within expression",
                     level=RULE_SEVERITY,
                     rule_uid=rule_uid,
                 )
