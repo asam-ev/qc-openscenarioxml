@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSCENARIO xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <FileHeader author="ASAM e.V." date="2021-02-05T18:50:17"
+        description="Sample test positive duration"
+        revMajor="1" revMinor="3" />
+    <ParameterDeclarations />
+    <CatalogLocations />
+    <RoadNetwork>
+        <TrafficSignals>
+            <TrafficSignalController name="controller1">
+                <Phase name="MyPhase" duration="1">
+                    <TrafficSignalState state="on" trafficSignalId="1" />
+                </Phase>
+            </TrafficSignalController>
+        </TrafficSignals>
+    </RoadNetwork>
+    <Entities></Entities>
+    <Storyboard>
+        <Init>
+            <Actions />
+        </Init>
+    </Storyboard>
+</OpenSCENARIO>

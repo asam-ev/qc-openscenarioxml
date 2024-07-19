@@ -2,9 +2,10 @@ from lxml import etree
 from typing import Union
 from qc_openscenario.checks import models
 import re
+import logging
 
-EXPRESSION_PATTERN = re.compile("[$][{][ A-Za-z0-9_\+\-\*/%$\(\)\.,]*[\}]")
-PARAMETER_PATTERN = re.compile("[$][A-Za-z_][A-Za-z0-9_]*")
+EXPRESSION_PATTERN = re.compile(r"[$][{][ A-Za-z0-9_\+\-\*/%$\(\)\.,]*[\}]")
+PARAMETER_PATTERN = re.compile(r"[$][A-Za-z_][A-Za-z0-9_]*")
 
 
 def get_standard_schema_version(root: etree._ElementTree) -> Union[str, None]:
@@ -73,6 +74,8 @@ def get_parameter_value_from_node(
             if name not in params_dict:
                 params_dict[name] = value
         current = current.getparent()
+
+    logging.debug(f"Visible parameters dictionary: {params_dict}")
 
     if parameter_name in params_dict:
         return params_dict[parameter_name]

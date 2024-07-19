@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSCENARIO xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <FileHeader revMajor="1" revMinor="3" date="2020-02-21T10:00:00" description="Test transition time"
+        author="ASAM e.V." />
+    <ParameterDeclarations />
+    <CatalogLocations />
+    <RoadNetwork />
+    <Entities />
+    <Storyboard>
+        <Init>
+            <Actions>
+                <Private entityRef="Ego">
+                    <PrivateAction>
+                        <AppearanceAction>
+                            <!-- Transition time is negative. -->
+                            <LightStateAction transitionTime="-1.2">
+                                <LightType>
+                                    <VehicleLight vehicleLightType="fogLights" />
+                                </LightType>
+                                <LightState mode="on" />
+                            </LightStateAction>
+                        </AppearanceAction>
+                    </PrivateAction>
+                </Private>
+            </Actions>
+        </Init>
+    </Storyboard>
+</OpenSCENARIO>
