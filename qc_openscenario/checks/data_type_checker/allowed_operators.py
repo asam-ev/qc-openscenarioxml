@@ -14,6 +14,7 @@ from qc_openscenario.checks import utils, models
 from qc_openscenario.checks.data_type_checker import data_type_constants
 
 import re
+import enum
 
 MIN_RULE_VERSION = "1.2.0"
 RULE_SEVERITY = IssueSeverity.ERROR
@@ -32,6 +33,14 @@ ALLOWED_OPERANDS.add("-")
 ALLOWED_OPERANDS.add("not")
 ALLOWED_OPERANDS.add("and")
 ALLOWED_OPERANDS.add("or")
+
+
+class ExpressionMember(enum.IntEnum):
+    INVALID = 0
+    VARIABLE = 1
+    OPERATOR = 2
+    NUMBER = 3
+    PARENTHESIS = 4
 
 
 @dataclass
@@ -129,21 +138,32 @@ def check_rule(checker_data: models.CheckerData) -> None:
         # Remove starting "${" and trailing "}"
         expression_candidate = attribute.value[2:-1]
         logging.debug(f"expression_candidate: {expression_candidate}")
-        # Define the regex pattern to match digits and allowed chars ( ) . and ,
-        pattern = r"[\d()., ]+"
-        # Split the input string based on the regex pattern
-        operand_candidates = re.split(pattern, expression_candidate)
-        # Filter out empty strings from the resulting list
-        operand_candidates = [
-            part
-            for part in operand_candidates
-            if part and part != "" and part != " " and not part.startswith("$")
-        ]
-        logging.debug(f"operand candidates : {operand_candidates}")
-        for operand in operand_candidates:
-            has_issue = operand not in ALLOWED_OPERANDS
+
+        # Tokenize the expression using regular expressions
+        token_pattern = r"\$[A-Za-z_]\w*|\d+\.\d+|\d+|[\+\-\*/\^%()**//\{\}]|\w+"
+        tokens = re.findall(token_pattern, expression_candidate)
+
+        token_type = None
+        logging.debug(f"tokens: {tokens}")
+        for token in tokens:
+            if token.startswith("$"):
+                token_type = ExpressionMember.VARIABLE
+            elif token in ALLOWED_OPERANDS:
+                token_type = ExpressionMember.OPERATOR
+            elif re.match(r"\d+\.\d+", token) or token.isdigit():
+                token_type = ExpressionMember.NUMBER
+            elif token in ["(", ")"]:
+                token_type = ExpressionMember.PARENTHESIS
+            else:
+                token_type = ExpressionMember.INVALID
+
+            logging.debug(f"token {token} - type {token_type}")
+            if token_type is None:
+                continue
+
+            has_issue = token_type == ExpressionMember.INVALID
             if has_issue:
-                logging.debug(f"Invalid operand {operand}")
+                logging.debug(f"Invalid operand {token}")
                 xpath = attribute.xpath
 
                 issue_id = checker_data.result.register_issue(
@@ -158,5 +178,5 @@ def check_rule(checker_data: models.CheckerData) -> None:
                     checker_id=data_type_constants.CHECKER_ID,
                     issue_id=issue_id,
                     xpath=xpath,
-                    description=f"Invalid operand {operand} used",
+                    description=f"Invalid operand {token} used",
                 )
