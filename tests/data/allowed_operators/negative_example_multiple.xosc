@@ -21,7 +21,7 @@
                                     <VehicleLight vehicleLightType="${2*3+4^23}" />
                                 </LightType>
                                 <!-- Character ^ not supported in expression -->
-                                <LightState mode="${3^foo}" />
+                                <LightState mode="${3^$foo}" />
                             </LightStateAction>
                         </AppearanceAction>
                     </PrivateAction>
