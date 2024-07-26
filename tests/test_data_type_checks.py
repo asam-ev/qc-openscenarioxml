@@ -190,6 +190,32 @@ def test_allowed_operators_positive_multiple(
     test_utils.cleanup_files()
 
 
+def test_trailer_connect_standard_example(
+    monkeypatch,
+) -> None:
+    base_path = "tests/data/parametric_operator_in_expression/"
+    target_file_name = f"TrailerConnect.xosc"
+    target_file_path = os.path.join(base_path, target_file_name)
+
+    test_utils.create_test_config(target_file_path)
+
+    test_utils.launch_main(monkeypatch)
+
+    result = Result()
+    result.load_from_file(test_utils.REPORT_FILE_PATH)
+
+    assert (
+        len(
+            result.get_issues_by_rule_uid(
+                "asam.net:xosc:1.2.0:data_type.allowed_operators"
+            )
+        )
+        == 0
+    )
+
+    test_utils.cleanup_files()
+
+
 def test_allowed_operators_negative(
     monkeypatch,
 ) -> None:
