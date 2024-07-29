@@ -94,6 +94,12 @@ def check_rule(checker_data: models.CheckerData) -> None:
             continue
 
         logging.debug(f"current_transition_time: {current_transition_time}")
+        if not utils.is_xsd_double(current_transition_time):
+            logging.error(
+                f"Cannot convert '{current_transition_time}' to double as it does not match xsd:double pattern. Skipping check..."
+            )
+            return
+
         current_numeric_value = float(current_transition_time)
         has_issue = current_numeric_value < 0
 
