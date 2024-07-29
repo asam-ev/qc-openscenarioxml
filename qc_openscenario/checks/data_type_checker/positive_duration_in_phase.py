@@ -85,6 +85,12 @@ def check_rule(checker_data: models.CheckerData) -> None:
                 continue
             current_duration = current_duration_param_value
 
+        if not utils.is_xsd_double(current_duration):
+            logging.error(
+                f"Cannot convert '{current_duration}' to double as it does not match xsd:double pattern. Skipping check..."
+            )
+            return
+
         current_numeric_value = float(current_duration)
         has_issue = current_numeric_value < 0
 
