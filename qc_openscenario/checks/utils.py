@@ -132,3 +132,17 @@ def get_attribute_type(attribute_value: str) -> models.AttributeType:
         return models.AttributeType.PARAMETER
 
     return models.AttributeType.VALUE
+
+
+def is_xsd_double(input_str: str) -> bool:
+    """Checks if input string follows xsd double specification
+    The pattern is built following xsd double definition from http://www.datypic.com/sc/xsd/t-xsd_double.html
+
+    Args:
+        input_str (str): The input string to check
+
+    Returns:
+        bool: True if the input string represent a valid xsd:double value. False otherwise
+    """
+    pattern = re.compile(r"^([+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?|INF|-INF|NaN)$")
+    return pattern.match(input_str) is not None
