@@ -573,3 +573,237 @@ def test_resolvable_variable_reference_multiple(
     )
     assert "foo" in reference_issues[1].locations[0].description
     test_utils.cleanup_files()
+
+
+def test_resolvable_storyboard_element_reference_positive(
+    monkeypatch,
+) -> None:
+    base_path = "tests/data/resolvable_storyboard_element_reference/"
+    target_file_name = f"resolvable_storyboard_element_reference.positive.xosc"
+    target_file_path = os.path.join(base_path, target_file_name)
+
+    test_utils.create_test_config(target_file_path)
+
+    test_utils.launch_main(monkeypatch)
+
+    result = Result()
+    result.load_from_file(test_utils.REPORT_FILE_PATH)
+
+    _ = result.get_checker_result(
+        checker_bundle_name=constants.BUNDLE_NAME,
+        checker_id=reference_constants.CHECKER_ID,
+    )
+    assert (
+        len(
+            result.get_issues_by_rule_uid(
+                "asam.net:xosc:1.2.0:reference_control.resolvable_storyboard_element_reference"
+            )
+        )
+        == 0
+    )
+
+
+def test_resolvable_storyboard_element_reference_positive_parameter(
+    monkeypatch,
+) -> None:
+    base_path = "tests/data/resolvable_storyboard_element_reference/"
+    target_file_name = (
+        f"resolvable_storyboard_element_reference.positive.parameter.xosc"
+    )
+    target_file_path = os.path.join(base_path, target_file_name)
+
+    test_utils.create_test_config(target_file_path)
+
+    test_utils.launch_main(monkeypatch)
+
+    result = Result()
+    result.load_from_file(test_utils.REPORT_FILE_PATH)
+
+    _ = result.get_checker_result(
+        checker_bundle_name=constants.BUNDLE_NAME,
+        checker_id=reference_constants.CHECKER_ID,
+    )
+    assert (
+        len(
+            result.get_issues_by_rule_uid(
+                "asam.net:xosc:1.2.0:reference_control.resolvable_storyboard_element_reference"
+            )
+        )
+        == 0
+    )
+
+
+def test_resolvable_storyboard_element_reference_negative(
+    monkeypatch,
+) -> None:
+    base_path = "tests/data/resolvable_storyboard_element_reference/"
+    target_file_name = f"resolvable_storyboard_element_reference.negative.xosc"
+    target_file_path = os.path.join(base_path, target_file_name)
+
+    test_utils.create_test_config(target_file_path)
+
+    test_utils.launch_main(monkeypatch)
+
+    result = Result()
+    result.load_from_file(test_utils.REPORT_FILE_PATH)
+
+    _ = result.get_checker_result(
+        checker_bundle_name=constants.BUNDLE_NAME,
+        checker_id=reference_constants.CHECKER_ID,
+    )
+
+    reference_issues = result.get_issues_by_rule_uid(
+        "asam.net:xosc:1.2.0:reference_control.resolvable_storyboard_element_reference"
+    )
+    assert len(reference_issues) == 2
+    assert reference_issues[0].level == IssueSeverity.ERROR
+    assert reference_issues[1].level == IssueSeverity.ERROR
+    assert "Act2" in reference_issues[0].locations[0].description
+    assert "Act1" in reference_issues[1].locations[0].description
+
+    test_utils.cleanup_files()
+
+
+def test_resolvable_storyboard_element_reference_negative_parameter(
+    monkeypatch,
+) -> None:
+    base_path = "tests/data/resolvable_storyboard_element_reference/"
+    target_file_name = (
+        f"resolvable_storyboard_element_reference.negative.parameter.xosc"
+    )
+    target_file_path = os.path.join(base_path, target_file_name)
+
+    test_utils.create_test_config(target_file_path)
+
+    test_utils.launch_main(monkeypatch)
+
+    result = Result()
+    result.load_from_file(test_utils.REPORT_FILE_PATH)
+
+    _ = result.get_checker_result(
+        checker_bundle_name=constants.BUNDLE_NAME,
+        checker_id=reference_constants.CHECKER_ID,
+    )
+
+    reference_issues = result.get_issues_by_rule_uid(
+        "asam.net:xosc:1.2.0:reference_control.resolvable_storyboard_element_reference"
+    )
+    assert len(reference_issues) == 1
+    assert reference_issues[0].level == IssueSeverity.ERROR
+    test_utils.cleanup_files()
+
+
+def test_unique_element_names_on_same_level_positive(
+    monkeypatch,
+) -> None:
+    base_path = "tests/data/unique_element_names_on_same_level/"
+    target_file_name = f"unique_element_names_on_same_level.positive.xosc"
+    target_file_path = os.path.join(base_path, target_file_name)
+
+    test_utils.create_test_config(target_file_path)
+
+    test_utils.launch_main(monkeypatch)
+
+    result = Result()
+    result.load_from_file(test_utils.REPORT_FILE_PATH)
+
+    _ = result.get_checker_result(
+        checker_bundle_name=constants.BUNDLE_NAME,
+        checker_id=reference_constants.CHECKER_ID,
+    )
+    assert (
+        len(
+            result.get_issues_by_rule_uid(
+                "asam.net:xosc:1.2.0:reference_control.unique_element_names_on_same_level"
+            )
+        )
+        == 0
+    )
+
+
+def test_unique_element_names_on_same_level_positive_multiple(
+    monkeypatch,
+) -> None:
+    base_path = "tests/data/unique_element_names_on_same_level/"
+    target_file_name = f"unique_element_names_on_same_level.positive.multiple.xosc"
+    target_file_path = os.path.join(base_path, target_file_name)
+
+    test_utils.create_test_config(target_file_path)
+
+    test_utils.launch_main(monkeypatch)
+
+    result = Result()
+    result.load_from_file(test_utils.REPORT_FILE_PATH)
+
+    _ = result.get_checker_result(
+        checker_bundle_name=constants.BUNDLE_NAME,
+        checker_id=reference_constants.CHECKER_ID,
+    )
+    assert (
+        len(
+            result.get_issues_by_rule_uid(
+                "asam.net:xosc:1.2.0:reference_control.unique_element_names_on_same_level"
+            )
+        )
+        == 0
+    )
+
+
+def test_unique_element_names_on_same_level_negative(
+    monkeypatch,
+) -> None:
+    base_path = "tests/data/unique_element_names_on_same_level/"
+    target_file_name = f"unique_element_names_on_same_level.negative.xosc"
+    target_file_path = os.path.join(base_path, target_file_name)
+
+    test_utils.create_test_config(target_file_path)
+
+    test_utils.launch_main(monkeypatch)
+
+    result = Result()
+    result.load_from_file(test_utils.REPORT_FILE_PATH)
+
+    _ = result.get_checker_result(
+        checker_bundle_name=constants.BUNDLE_NAME,
+        checker_id=reference_constants.CHECKER_ID,
+    )
+
+    reference_issues = result.get_issues_by_rule_uid(
+        "asam.net:xosc:1.2.0:reference_control.unique_element_names_on_same_level"
+    )
+    assert len(reference_issues) == 1
+    assert reference_issues[0].level == IssueSeverity.ERROR
+    test_utils.cleanup_files()
+
+
+def test_unique_element_names_on_same_level_negative_multiple(
+    monkeypatch,
+) -> None:
+    base_path = "tests/data/unique_element_names_on_same_level/"
+    target_file_name = f"unique_element_names_on_same_level.negative.multiple.xosc"
+    target_file_path = os.path.join(base_path, target_file_name)
+
+    test_utils.create_test_config(target_file_path)
+
+    test_utils.launch_main(monkeypatch)
+
+    result = Result()
+    result.load_from_file(test_utils.REPORT_FILE_PATH)
+
+    _ = result.get_checker_result(
+        checker_bundle_name=constants.BUNDLE_NAME,
+        checker_id=reference_constants.CHECKER_ID,
+    )
+
+    reference_issues = result.get_issues_by_rule_uid(
+        "asam.net:xosc:1.2.0:reference_control.unique_element_names_on_same_level"
+    )
+    assert len(reference_issues) == 3
+    assert reference_issues[0].level == IssueSeverity.ERROR
+    assert reference_issues[1].level == IssueSeverity.ERROR
+    assert reference_issues[2].level == IssueSeverity.ERROR
+
+    assert "Story1" in reference_issues[0].locations[0].description
+    assert "Event222" in reference_issues[1].locations[0].description
+    assert "Event1" in reference_issues[2].locations[0].description
+    test_utils.cleanup_files()
