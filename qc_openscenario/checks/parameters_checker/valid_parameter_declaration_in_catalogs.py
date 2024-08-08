@@ -39,7 +39,6 @@ def check_rule(checker_data: models.CheckerData) -> None:
     if schema_version is None:
         logging.info(f"- Version not found in the file. Skipping check")
         return
-
     if utils.compare_versions(schema_version, MIN_RULE_VERSION) < 0:
         logging.info(
             f"- Version {schema_version} is less than minimum required version {MIN_RULE_VERSION}. Skipping check"
