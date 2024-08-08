@@ -3,6 +3,7 @@ import logging
 from datetime import datetime
 
 from qc_baselib import Configuration, Result
+from qc_baselib.models.common import ParamType
 
 from qc_openscenario import constants
 from qc_openscenario.checks.schema_checker import schema_checker
@@ -48,6 +49,11 @@ def main():
         )
         result.set_result_version(version=constants.BUNDLE_VERSION)
 
+        input_file_path = config.get_config_param("InputFile")
+        input_param = ParamType(name="InputFile", value=input_file_path)
+        result.get_checker_bundle_result(constants.BUNDLE_NAME).params.append(
+            input_param
+        )
         # 1. Run basic checks
         checker_data = basic_checker.run_checks(config=config, result=result)
 
