@@ -2,7 +2,7 @@ import os
 import sys
 import pytest
 from typing import List
-import main
+import qc_openscenario.main as main
 from qc_openscenario import constants, checks
 from qc_baselib import Configuration, Result
 
