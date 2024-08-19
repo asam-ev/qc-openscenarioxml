@@ -83,7 +83,7 @@ asam.net:xosc:0.9.0:is_an_xml_document
 ## Tests
 
 To run the tests, you need to have installed the main dependencies mentioned
-at [Instalation](#installation).
+at [Installation](#installation).
 
 **Install Python tests and development dependencies:**
 
