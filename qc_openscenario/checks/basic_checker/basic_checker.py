@@ -41,7 +41,7 @@ def run_checks(config: Configuration, result: Result) -> models.CheckerData:
 
     else:
         input_file_path = config.get_config_param("InputFile")
-        root = etree.parse(input_file_path)
+        root = utils.get_root_without_default_namespace(input_file_path)
         xosc_schema_version = utils.get_standard_schema_version(root)
 
         xodr_root = utils.get_xodr_road_network(input_file_path, root)
