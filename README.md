@@ -1,6 +1,6 @@
 # qc-openscenarioxml
 
-This project implements the OpenScenario Checker for the ASAM Quality Checker project.
+This project implements the [ASAM OpenScenario XML Checker](checker_bundle_doc.md) for the ASAM Quality Checker project.
 
 ## Installation
 
