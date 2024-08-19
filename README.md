@@ -32,7 +32,9 @@ The checker can be used as a Python script:
 **Default python**
 
 ```
-python main.py --help
+// python qc_opescenario/main.py --help
+// python -m qc_opescenario.main --help
+qc_opescenario --help
 usage: QC OpenScenario Checker [-h] (-d | -c CONFIG_PATH)
 This is a collection of scripts for checking validity of OpenScenario (.xosc) files.
 options:
@@ -44,7 +46,7 @@ options:
 **Poetry**
 
 ```
-poetry run python main.py --help
+poetry run qc_opescenario --help
 usage: QC OpenScenario Checker [-h] (-d | -c CONFIG_PATH)
 This is a collection of scripts for checking validity of OpenScenario (.xosc) files.
 options:
