@@ -1,4 +1,5 @@
 from lxml import etree
+from io import BytesIO
 from typing import Union
 from qc_openscenario.checks import models
 import re
@@ -7,6 +8,16 @@ import os
 
 EXPRESSION_PATTERN = re.compile(r"[$][{][ A-Za-z0-9_\+\-\*/%$\(\)\.,]*[\}]")
 PARAMETER_PATTERN = re.compile(r"[$][A-Za-z_][A-Za-z0-9_]*")
+
+
+def get_root_without_default_namespace(path: str) -> etree._ElementTree:
+    with open(path, "rb") as raw_file:
+        xml_string = raw_file.read().decode()
+
+        if "xmlns" in xml_string:
+            xml_string = re.sub(' xmlns="[^"]+"', "", xml_string)
+
+        return etree.parse(BytesIO(xml_string.encode()))
 
 
 def get_standard_schema_version(root: etree._ElementTree) -> Union[str, None]:
@@ -117,7 +128,7 @@ def get_xodr_road_network(
     previous_wd = os.getcwd()
     os.chdir(os.path.dirname(input_file_path))
 
-    xodr_root = etree.parse(filepath)
+    xodr_root = get_root_without_default_namespace(filepath)
 
     os.chdir(previous_wd)
 
