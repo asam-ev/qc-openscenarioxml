@@ -25,6 +25,8 @@ def args_entrypoint() -> argparse.Namespace:
     group.add_argument("-d", "--default_config", action="store_true")
     group.add_argument("-c", "--config_path")
 
+    parser.add_argument("-g", "--generate_markdown", action="store_true")
+
     return parser.parse_args()
 
 
@@ -75,8 +77,8 @@ def main():
             )
         )
 
-        # Uncomment the follow line to generate the checker bundle documentation.
-        # result.write_markdown_doc("checker_bundle_doc.md")
+        if args.generate_markdown:
+            result.write_markdown_doc("generated_checker_bundle_doc.md")
 
     logging.info("Done")
 
