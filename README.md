@@ -1,66 +1,78 @@
-# qc-openscenarioxml
+# asam-qc-openscenarioxml
 
-This project implements the [ASAM OpenScenario XML Checker](checker_bundle_doc.md) for the ASAM Quality Checker project.
+This project implements the [ASAM OpenScenario XML Checker](checker_bundle_doc.md).
 
-## Installation
+## Installation and usage
 
-There are two options of usage of the project:
+asam-qc-openscenarioxml can be installed using pip or from source.
 
-1. Default python on the machine
+### Installation using pip
+
+asam-qc-openscenarioxml can be installed using pip.
+
+```bash
+pip install asam-qc-openscenarioxml@git+https://github.com/asam-ev/qc-openscenarioxml@main
+```
+
+**Note**: To install from different sources, you can replace `@main` with
+your desired target. For example, `develop` branch as `@develop`.
+
+To run the application:
+
+```bash
+qc_openscenario --help
+usage: QC OpenScenario Checker [-h] (-d | -c CONFIG_PATH)
+This is a collection of scripts for checking validity of OpenScenario (.xosc) files.
+options:
+  -h, --help            show this help message and exit
+  -d, --default_config
+  -c CONFIG_PATH, --config_path CONFIG_PATH
+```
+
+The following commands are equivalent:
+
+```bash
+qc_openscenario --help
+python qc_openscenario/main.py --help
+python -m qc_openscenario.main --help
+```
+
+### Installation from source
+
+After cloning the repository, there are two options to install from source.
+
+1. Default Python on the machine
 2. [Poetry](https://python-poetry.org/)
 
-To install the project, run:
+#### Default Python
 
-**Default python**
-
-```
+```bash
 pip install -r requirements.txt
 ```
 
 This will install the needed dependencies to your local Python.
 
-**Poetry**
+#### Poetry
 
-```
+```bash
 poetry install
 ```
 
-## Usage
+After installing from source, the usage are similar to above.
 
-The checker can be used as a Python script:
-
-**Default python**
-
-```
-// python qc_opescenario/main.py --help
-// python -m qc_opescenario.main --help
-qc_opescenario --help
-usage: QC OpenScenario Checker [-h] (-d | -c CONFIG_PATH)
-This is a collection of scripts for checking validity of OpenScenario (.xosc) files.
-options:
-  -h, --help            show this help message and exit
-  -d, --default_config
-  -c CONFIG_PATH, --config_path CONFIG_PATH
+```bash
+qc_openscenario --help
+python qc_openscenario/main.py --help
+python -m qc_openscenario.main --help
 ```
 
-**Poetry**
-
-```
-poetry run qc_opescenario --help
-usage: QC OpenScenario Checker [-h] (-d | -c CONFIG_PATH)
-This is a collection of scripts for checking validity of OpenScenario (.xosc) files.
-options:
-  -h, --help            show this help message and exit
-  -d, --default_config
-  -c CONFIG_PATH, --config_path CONFIG_PATH
-```
-
-### Example
+### Example output
 
 - No issues found
 
-```
-python3 main.py -c example_config.xml
+```bash
+python qc_openscenario/main.py -c example_config.xml
+
 2024-06-12 15:14:11,864 - Initializing checks
 2024-06-12 15:14:11,865 - Executing xml checks
 2024-06-12 15:14:11,865 - Executing is_an_xml_document check
@@ -71,8 +83,9 @@ asam.net:xosc:0.9.0:is_an_xml_document
 
 - Issues found on file
 
-```
-python3 main.py -c example_config.xml
+```bash
+python qc_openscenario/main.py -c example_config.xml
+
 2024-06-12 15:19:45,139 - Initializing checks
 2024-06-12 15:19:45,140 - Executing xml checks
 2024-06-12 15:19:45,140 - Executing is_an_xml_document check
@@ -84,34 +97,30 @@ asam.net:xosc:0.9.0:is_an_xml_document
 
 ## Tests
 
-To run the tests, you need to have installed the main dependencies mentioned
-at [Installation](#installation).
+To run the tests, you need to install the extra test dependency after installing from source.
 
-**Install Python tests and development dependencies:**
+### Install using pip
 
-**Default python**
-
-```
+```bash
 pip install -r requirements-tests.txt
 ```
 
-**Poetry**
+### Install using poetry
 
-```
+```bash
 poetry install --with dev
 ```
 
-**Execute tests:**
+### Execute tests
 
-**Default python**
 
-```
+```bash
 python -m pytest -vv
 ```
 
-**Poetry**
+or
 
-```
+```bash
 poetry run pytest -vv
 ```
 
@@ -129,8 +138,14 @@ You can check more options for pytest at its [own documentation](https://docs.py
 For contributing, you need to install the development requirements besides the
 test and installation requirements, for that run:
 
-```
+```bash
 pip install -r requirements-dev.txt
+```
+
+or
+
+```bash
+poetry install --with dev
 ```
 
 You need to have pre-commit installed and install the hooks:
