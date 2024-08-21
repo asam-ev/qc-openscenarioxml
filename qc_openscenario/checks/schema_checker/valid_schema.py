@@ -1,3 +1,4 @@
+import importlib.resources
 import os, logging
 
 from dataclasses import dataclass
@@ -68,8 +69,9 @@ def check_rule(checker_data: models.CheckerData) -> None:
     schema_files_dict = schema_files.SCHEMA_FILES
 
     xsd_file = schema_files_dict[schema_version]
-    xsd_file_path = os.path.join("qc_openscenario", "schema", xsd_file)
-
+    xsd_file_path = str(
+        importlib.resources.files("qc_openscenario.schema").joinpath(xsd_file)
+    )
     schema_compliant, errors = _is_schema_compliant(
         checker_data.input_file_xml_root, xsd_file_path
     )
