@@ -24,7 +24,7 @@ def run_checks(config: Configuration, result: Result) -> models.CheckerData:
         summary="",
     )
 
-    xml_file_path = config.get_config_param("XoscFile")
+    xml_file_path = config.get_config_param("InputFile")
     is_xml = valid_xml_document.check_rule(xml_file_path, result)
 
     checker_data = None
@@ -40,14 +40,11 @@ def run_checks(config: Configuration, result: Result) -> models.CheckerData:
         )
 
     else:
-        input_file_path = config.get_config_param("XoscFile")
-        root = etree.parse(input_file_path)
+        input_file_path = config.get_config_param("InputFile")
+        root = utils.get_root_without_default_namespace(input_file_path)
         xosc_schema_version = utils.get_standard_schema_version(root)
 
-        previous_wd = os.getcwd()
-        os.chdir(os.path.dirname(input_file_path))
-        xodr_root = utils.get_xodr_road_network(root)
-        os.chdir(previous_wd)
+        xodr_root = utils.get_xodr_road_network(input_file_path, root)
         checker_data = models.CheckerData(
             input_file_xml_root=root,
             config=config,

@@ -1,11 +1,23 @@
 from lxml import etree
+from io import BytesIO
 from typing import Union
 from qc_openscenario.checks import models
 import re
 import logging
+import os
 
 EXPRESSION_PATTERN = re.compile(r"[$][{][ A-Za-z0-9_\+\-\*/%$\(\)\.,]*[\}]")
 PARAMETER_PATTERN = re.compile(r"[$][A-Za-z_][A-Za-z0-9_]*")
+
+
+def get_root_without_default_namespace(path: str) -> etree._ElementTree:
+    with open(path, "rb") as raw_file:
+        xml_string = raw_file.read().decode()
+
+        if "xmlns" in xml_string:
+            xml_string = re.sub(' xmlns="[^"]+"', "", xml_string)
+
+        return etree.parse(BytesIO(xml_string.encode()))
 
 
 def get_standard_schema_version(root: etree._ElementTree) -> Union[str, None]:
@@ -83,7 +95,9 @@ def get_parameter_value_from_node(
         return None
 
 
-def get_xodr_road_network(tree: etree._ElementTree) -> Union[etree._ElementTree, None]:
+def get_xodr_road_network(
+    input_file_path: str, tree: etree._ElementTree
+) -> Union[etree._ElementTree, None]:
     """Get parsed xodr tree indicated in the RoadNetwork/LogicFile node of the input tree
 
     Args:
@@ -93,6 +107,7 @@ def get_xodr_road_network(tree: etree._ElementTree) -> Union[etree._ElementTree,
         Union[etree._ElementTree, None]: the parsed road network tree.
                                          None if the specified nodes in the root or the road network file are not found
     """
+
     road_network = tree.find("RoadNetwork")
     if road_network is None:
         return None
@@ -110,7 +125,14 @@ def get_xodr_road_network(tree: etree._ElementTree) -> Union[etree._ElementTree,
         if filepath is None:
             return None
 
-    return etree.parse(filepath)
+    previous_wd = os.getcwd()
+    os.chdir(os.path.dirname(input_file_path))
+
+    xodr_root = get_root_without_default_namespace(filepath)
+
+    os.chdir(previous_wd)
+
+    return xodr_root
 
 
 def get_attribute_type(attribute_value: str) -> models.AttributeType:
