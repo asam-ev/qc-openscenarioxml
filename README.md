@@ -9,6 +9,7 @@ This project implements the [ASAM OpenScenario XML Checker](checker_bundle_doc.m
     - [Example output](#example-output)
   - [Register Checker Bundle to ASAM Quality Checker Framework](#register-checker-bundle-to-asam-quality-checker-framework)
     - [Linux Manifest Template](#linux-manifest-template)
+    - [Windows Manifest Template](#windows-manifest-template)
   - [Tests](#tests)
   - [Contributing](#contributing)
 
@@ -99,7 +100,27 @@ Manifest file templates are provided in the [manifest_templates](manifest_templa
 
 ### Linux Manifest Template
 
-To register this Checker Bundle in Linux, use the [linux_manifest.json](manifest_templates/linux_manifest.json) template file. Replace the path to the Python executable `/home/user/.venv/bin/python` in the `exec_command` with the path to the Python executable where the Checker Bundle is installed.
+To register this Checker Bundle in Linux, use the [linux_xosc_manifest.json](manifest_templates/linux_xosc_manifest.json) template file.
+
+If the asam-qc-opendrive is installed in a virtual environment, the `exec_command` needs to be adjusted as follows:
+
+```json
+"exec_command": "source <venv>/bin/activate && cd $ASAM_QC_FRAMEWORK_WORKING_DIR && qc_openscenario -c $ASAM_QC_FRAMEWORK_CONFIG_FILE"
+```
+
+Replace `<venv>/bin/activate` by the path to your virtual environment.
+
+### Windows Manifest Template
+
+To register this Checker Bundle in Windows, use the [windows_xosc_manifest.json](manifest_templates/windows_xosc_manifest.json) template file.
+
+If the asam-qc-opendrive is installed in a virtual environment, the `exec_command` needs to be adjusted as follows:
+
+```json
+"exec_command": "C:\\> <venv>\\Scripts\\activate.bat && cd %ASAM_QC_FRAMEWORK_WORKING_DIR% && qc_openscenario -c %ASAM_QC_FRAMEWORK_CONFIG_FILE%"
+```
+
+Replace `C:\\> <venv>\\Scripts\\activate.bat` by the path to your virtual environment.
 
 ## Tests
 
