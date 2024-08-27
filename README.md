@@ -10,6 +10,7 @@ This project implements the [ASAM OpenScenario XML Checker](checker_bundle_doc.m
   - [Register Checker Bundle to ASAM Quality Checker Framework](#register-checker-bundle-to-asam-quality-checker-framework)
     - [Linux Manifest Template](#linux-manifest-template)
     - [Windows Manifest Template](#windows-manifest-template)
+    - [Example Configuration File](#example-configuration-file)
   - [Tests](#tests)
   - [Contributing](#contributing)
 
@@ -121,6 +122,33 @@ If the asam-qc-openscenarioxml is installed in a virtual environment, the `exec_
 ```
 
 Replace `C:\\> <venv>\\Scripts\\activate.bat` by the path to your virtual environment.
+
+### Example Configuration File
+
+An example configuration file for using this Checker Bundle within the ASAM Quality Checker Framework is as follows.
+
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Config>
+
+    <Param name="InputFile" value="template.xosc" />
+
+    <CheckerBundle application="xoscBundle">
+        <Param name="resultFile" value="xosc_bundle_report.xqar" />
+        <Checker checkerId="basic_xosc" maxLevel="1" minLevel="3" />
+        <Checker checkerId="schema_xosc" maxLevel="1" minLevel="3" />
+        <Checker checkerId="data_type_xosc" maxLevel="1" minLevel="3" />
+        <Checker checkerId="parameters_xosc" maxLevel="1" minLevel="3" />
+        <Checker checkerId="reference_xosc" maxLevel="1" minLevel="3" />
+    </CheckerBundle>
+
+    <ReportModule application="TextReport">
+        <Param name="strInputFile" value="Result.xqar" />
+        <Param name="strReportFile" value="Report.txt" />
+    </ReportModule>
+
+</Config>
+```
 
 ## Tests
 
