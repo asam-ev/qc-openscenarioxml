@@ -6,15 +6,12 @@ This project implements the [ASAM OpenScenario XML Checker](checker_bundle_doc.m
   - [Installation and usage](#installation-and-usage)
     - [Installation using pip](#installation-using-pip)
     - [Installation from source](#installation-from-source)
-      - [Default Python](#default-python)
-      - [Poetry](#poetry)
     - [Example output](#example-output)
   - [Register Checker Bundle to ASAM Quality Checker Framework](#register-checker-bundle-to-asam-quality-checker-framework)
     - [Linux Manifest Template](#linux-manifest-template)
+    - [Windows Manifest Template](#windows-manifest-template)
+    - [Example Configuration File](#example-configuration-file)
   - [Tests](#tests)
-    - [Install using pip](#install-using-pip)
-    - [Install using poetry](#install-using-poetry)
-    - [Execute tests](#execute-tests)
   - [Contributing](#contributing)
 
 
@@ -55,20 +52,7 @@ python -m qc_openscenario.main --help
 
 ### Installation from source
 
-After cloning the repository, there are two options to install from source.
-
-1. Default Python on the machine
-2. [Poetry](https://python-poetry.org/)
-
-#### Default Python
-
-```bash
-pip install -r requirements.txt
-```
-
-This will install the needed dependencies to your local Python.
-
-#### Poetry
+After cloning the repository, install the project using [Poetry](https://python-poetry.org/).
 
 ```bash
 poetry install
@@ -113,30 +97,68 @@ asam.net:xosc:0.9.0:is_an_xml_document
 
 ## Register Checker Bundle to ASAM Quality Checker Framework
 
-Manifest file templates are provided in the [manifest_templates](manifest_templates/) folder to register the ASAM OpenDrive Checker Bundle with the [ASAM Quality Checker Framework](https://github.com/asam-ev/qc-framework/tree/main).
+Manifest file templates are provided in the [manifest_templates](manifest_templates/) folder to register the ASAM OpenScenario XML Checker Bundle with the [ASAM Quality Checker Framework](https://github.com/asam-ev/qc-framework/tree/main).
 
 ### Linux Manifest Template
 
-To register this Checker Bundle in Linux, use the [linux_manifest.json](manifest_templates/linux_manifest.json) template file. Replace the path to the Python executable `/home/user/.venv/bin/python` in the `exec_command` with the path to the Python executable where the Checker Bundle is installed.
+To register this Checker Bundle in Linux, use the [linux_xosc_manifest.json](manifest_templates/linux_xosc_manifest.json) template file.
+
+If the asam-qc-openscenarioxml is installed in a virtual environment, the `exec_command` needs to be adjusted as follows:
+
+```json
+"exec_command": "source <venv>/bin/activate && cd $ASAM_QC_FRAMEWORK_WORKING_DIR && qc_openscenario -c $ASAM_QC_FRAMEWORK_CONFIG_FILE"
+```
+
+Replace `<venv>/bin/activate` by the path to your virtual environment.
+
+### Windows Manifest Template
+
+To register this Checker Bundle in Windows, use the [windows_xosc_manifest.json](manifest_templates/windows_xosc_manifest.json) template file.
+
+If the asam-qc-openscenarioxml is installed in a virtual environment, the `exec_command` needs to be adjusted as follows:
+
+```json
+"exec_command": "C:\\> <venv>\\Scripts\\activate.bat && cd %ASAM_QC_FRAMEWORK_WORKING_DIR% && qc_openscenario -c %ASAM_QC_FRAMEWORK_CONFIG_FILE%"
+```
+
+Replace `C:\\> <venv>\\Scripts\\activate.bat` by the path to your virtual environment.
+
+### Example Configuration File
+
+An example configuration file for using this Checker Bundle within the ASAM Quality Checker Framework is as follows.
+
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Config>
+
+    <Param name="InputFile" value="template.xosc" />
+
+    <CheckerBundle application="xoscBundle">
+        <Param name="resultFile" value="xosc_bundle_report.xqar" />
+        <Checker checkerId="basic_xosc" maxLevel="1" minLevel="3" />
+        <Checker checkerId="schema_xosc" maxLevel="1" minLevel="3" />
+        <Checker checkerId="data_type_xosc" maxLevel="1" minLevel="3" />
+        <Checker checkerId="parameters_xosc" maxLevel="1" minLevel="3" />
+        <Checker checkerId="reference_xosc" maxLevel="1" minLevel="3" />
+    </CheckerBundle>
+
+    <ReportModule application="TextReport">
+        <Param name="strInputFile" value="Result.xqar" />
+        <Param name="strReportFile" value="Report.txt" />
+    </ReportModule>
+
+</Config>
+```
 
 ## Tests
 
 To run the tests, you need to install the extra test dependency after installing from source.
 
-### Install using pip
-
-```bash
-pip install -r requirements-tests.txt
-```
-
-### Install using poetry
-
 ```bash
 poetry install --with dev
 ```
 
-### Execute tests
-
+To execute tests
 
 ```bash
 python -m pytest -vv
@@ -161,12 +183,6 @@ You can check more options for pytest at its [own documentation](https://docs.py
 
 For contributing, you need to install the development requirements besides the
 test and installation requirements, for that run:
-
-```bash
-pip install -r requirements-dev.txt
-```
-
-or
 
 ```bash
 poetry install --with dev
