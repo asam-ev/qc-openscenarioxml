@@ -29,15 +29,9 @@ def run_checks(config: Configuration, result: Result) -> models.CheckerData:
 
     xml_file_path = config.get_config_param("InputFile")
 
-    validation_result = True
-
-    validation_result = validation_result and valid_xml_document.check_rule(
-        xml_file_path, result
-    )
+    is_xml = valid_xml_document.check_rule(xml_file_path, result)
     root = None
-
-    if validation_result:
-        root = utils.get_root_without_default_namespace(xml_file_path)
+    checker_data = None
 
     basic_rule_list = [
         root_tag_is_openscenario.check_rule,
@@ -45,15 +39,19 @@ def run_checks(config: Configuration, result: Result) -> models.CheckerData:
         version_is_defined.check_rule,
     ]
 
-    for rule in basic_rule_list:
-        validation_result = validation_result and rule(root, result)
-        if not validation_result:
-            break
+    validation_result = is_xml
+    if validation_result:
+        root = utils.get_root_without_default_namespace(xml_file_path)
 
-    checker_data = None
+        for rule in basic_rule_list:
+            validation_result = validation_result and rule(root, result)
+            if not validation_result:
+                break
 
     if not validation_result:
-        logging.error("Error in input xml!")
+        logging.warning(
+            "There are problems with input file. Error found in basic rules!"
+        )
         checker_data = models.CheckerData(
             input_file_xml_root=None,
             config=config,
