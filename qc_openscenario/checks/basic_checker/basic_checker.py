@@ -11,6 +11,9 @@ from qc_openscenario.checks import utils, models
 from qc_openscenario.checks.basic_checker import (
     basic_constants,
     valid_xml_document,
+    root_tag_is_openscenario,
+    fileheader_is_present,
+    version_is_defined,
 )
 
 
@@ -25,11 +28,31 @@ def run_checks(config: Configuration, result: Result) -> models.CheckerData:
     )
 
     xml_file_path = config.get_config_param("InputFile")
-    is_xml = valid_xml_document.check_rule(xml_file_path, result)
+
+    validation_result = True
+
+    validation_result = validation_result and valid_xml_document.check_rule(
+        xml_file_path, result
+    )
+    root = None
+
+    if validation_result:
+        root = utils.get_root_without_default_namespace(xml_file_path)
+
+    basic_rule_list = [
+        root_tag_is_openscenario.check_rule,
+        fileheader_is_present.check_rule,
+        version_is_defined.check_rule,
+    ]
+
+    for rule in basic_rule_list:
+        validation_result = validation_result and rule(root, result)
+        if not validation_result:
+            break
 
     checker_data = None
 
-    if not is_xml:
+    if not validation_result:
         logging.error("Error in input xml!")
         checker_data = models.CheckerData(
             input_file_xml_root=None,
@@ -40,11 +63,8 @@ def run_checks(config: Configuration, result: Result) -> models.CheckerData:
         )
 
     else:
-        input_file_path = config.get_config_param("InputFile")
-        root = utils.get_root_without_default_namespace(input_file_path)
         xosc_schema_version = utils.get_standard_schema_version(root)
-
-        xodr_root = utils.get_xodr_road_network(input_file_path, root)
+        xodr_root = utils.get_xodr_road_network(xml_file_path, root)
         checker_data = models.CheckerData(
             input_file_xml_root=root,
             config=config,
