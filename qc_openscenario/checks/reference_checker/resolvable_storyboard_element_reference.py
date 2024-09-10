@@ -1,21 +1,14 @@
-import os, logging
+import logging
 
-from dataclasses import dataclass
-from typing import List
-
-from lxml import etree
-
-from qc_baselib import Configuration, Result, IssueSeverity
+from qc_baselib import IssueSeverity, StatusType
 
 from qc_openscenario import constants
-from qc_openscenario.schema import schema_files
 from qc_openscenario.checks import utils, models
 
-from qc_openscenario.checks.reference_checker import reference_constants
-from collections import deque, defaultdict
+from qc_openscenario.checks.reference_checker import reference_checker_precondition
 
+CHECKER_ID = "check_asam_xosc_reference_control_resolvable_storyboard_element_reference"
 MIN_RULE_VERSION = "1.2.0"
-RULE_SEVERITY = IssueSeverity.ERROR
 STORYBOARD_ELEMENTS = ["Act", "Action", "Event", "Maneuver", "ManeuverGroup", " Story"]
 
 
@@ -37,25 +30,44 @@ def check_rule(checker_data: models.CheckerData) -> None:
     """
     logging.info("Executing resolvable_storyboard_element_reference check")
 
-    schema_version = checker_data.schema_version
-    if schema_version is None:
-        logging.info(f"- Version not found in the file. Skipping check")
-        return
-
-    if utils.compare_versions(schema_version, MIN_RULE_VERSION) < 0:
-        logging.info(
-            f"- Version {schema_version} is less than minimum required version {MIN_RULE_VERSION}. Skipping check"
-        )
-        return
+    checker_data.result.register_checker(
+        checker_bundle_name=constants.BUNDLE_NAME,
+        checker_id=CHECKER_ID,
+        description="The attribute storyboardElementRef shall point to an existing element of the corresponding type and shall be uniquely resolvable.",
+    )
 
     rule_uid = checker_data.result.register_rule(
         checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=reference_constants.CHECKER_ID,
+        checker_id=CHECKER_ID,
         emanating_entity="asam.net",
         standard="xosc",
         definition_setting=MIN_RULE_VERSION,
         rule_full_name="reference_control.resolvable_storyboard_element_reference",
     )
+
+    if not checker_data.result.all_checkers_completed_without_issue(
+        reference_checker_precondition.PRECONDITIONS
+    ):
+        checker_data.result.set_checker_status(
+            checker_bundle_name=constants.BUNDLE_NAME,
+            checker_id=CHECKER_ID,
+            status=StatusType.SKIPPED,
+        )
+
+        return
+
+    schema_version = checker_data.schema_version
+    if (
+        schema_version is None
+        or utils.compare_versions(schema_version, MIN_RULE_VERSION) < 0
+    ):
+        checker_data.result.set_checker_status(
+            checker_bundle_name=constants.BUNDLE_NAME,
+            checker_id=CHECKER_ID,
+            status=StatusType.SKIPPED,
+        )
+
+        return
 
     root = checker_data.input_file_xml_root
 
@@ -64,6 +76,11 @@ def check_rule(checker_data: models.CheckerData) -> None:
         logging.error(
             "Cannot find Storyboard node in provided XOSC file. Skipping check"
         )
+        checker_data.result.set_checker_status(
+            checker_bundle_name=constants.BUNDLE_NAME,
+            checker_id=CHECKER_ID,
+            status=StatusType.SKIPPED,
+        )
         return
 
     xpath_expr = "|".join([f"//{node}" for node in STORYBOARD_ELEMENTS])
@@ -71,6 +88,11 @@ def check_rule(checker_data: models.CheckerData) -> None:
     if storyboard_elements is None:
         logging.error(
             "Cannot find Storyboard elements node in provided XOSC file. Skipping check"
+        )
+        checker_data.result.set_checker_status(
+            checker_bundle_name=constants.BUNDLE_NAME,
+            checker_id=CHECKER_ID,
+            status=StatusType.SKIPPED,
         )
         return
 
@@ -137,16 +159,22 @@ def check_rule(checker_data: models.CheckerData) -> None:
 
             issue_id = checker_data.result.register_issue(
                 checker_bundle_name=constants.BUNDLE_NAME,
-                checker_id=reference_constants.CHECKER_ID,
+                checker_id=CHECKER_ID,
                 description="Issue flagging when a storyboardElementRef does not point to an existing element",
-                level=RULE_SEVERITY,
+                level=IssueSeverity.ERROR,
                 rule_uid=rule_uid,
             )
             issue_description = f"Storyboard element reference {current_storyboard_el_ref} not found among Storyboard elements "
             checker_data.result.add_xml_location(
                 checker_bundle_name=constants.BUNDLE_NAME,
-                checker_id=reference_constants.CHECKER_ID,
+                checker_id=CHECKER_ID,
                 issue_id=issue_id,
                 xpath=xpath,
                 description=issue_description,
             )
+
+    checker_data.result.set_checker_status(
+        checker_bundle_name=constants.BUNDLE_NAME,
+        checker_id=CHECKER_ID,
+        status=StatusType.COMPLETED,
+    )

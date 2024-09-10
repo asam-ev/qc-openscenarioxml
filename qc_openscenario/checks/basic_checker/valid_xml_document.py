@@ -1,16 +1,11 @@
 import logging
 
-from dataclasses import dataclass
-from typing import List
-
 from lxml import etree
 
-from qc_baselib import Configuration, Result, IssueSeverity
-
+from qc_baselib import Result, IssueSeverity, StatusType
 from qc_openscenario import constants
-from qc_openscenario.checks import utils, models
 
-from qc_openscenario.checks.basic_checker import basic_constants
+CHECKER_ID = "check_asam_xosc_xml_valid_xml_document"
 
 
 def _is_xml_doc(file_path: str) -> tuple[bool, tuple[int, int]]:
@@ -26,7 +21,7 @@ def _is_xml_doc(file_path: str) -> tuple[bool, tuple[int, int]]:
         return False, (e.lineno, e.offset)
 
 
-def check_rule(input_xml_file_path: str, result: Result) -> bool:
+def check_rule(input_xml_file_path: str, result: Result) -> None:
     """
     Implements a rule to check if input file is a valid xml document
 
@@ -35,9 +30,15 @@ def check_rule(input_xml_file_path: str, result: Result) -> bool:
     """
     logging.info("Executing valid_xml_document check")
 
+    result.register_checker(
+        checker_bundle_name=constants.BUNDLE_NAME,
+        checker_id=CHECKER_ID,
+        description="The given file to check must be a valid XML document.",
+    )
+
     rule_uid = result.register_rule(
         checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=basic_constants.CHECKER_ID,
+        checker_id=CHECKER_ID,
         emanating_entity="asam.net",
         standard="xosc",
         definition_setting="1.0.0",
@@ -50,21 +51,23 @@ def check_rule(input_xml_file_path: str, result: Result) -> bool:
 
         issue_id = result.register_issue(
             checker_bundle_name=constants.BUNDLE_NAME,
-            checker_id=basic_constants.CHECKER_ID,
-            description="Issue flagging when input file is not a valid xml document",
+            checker_id=CHECKER_ID,
+            description="The input file is not a valid xml document",
             level=IssueSeverity.ERROR,
             rule_uid=rule_uid,
         )
 
         result.add_file_location(
             checker_bundle_name=constants.BUNDLE_NAME,
-            checker_id=basic_constants.CHECKER_ID,
+            checker_id=CHECKER_ID,
             issue_id=issue_id,
             row=error_location[0],
             column=error_location[1],
-            description=f"Invalid xml detected",
+            description=f"Invalid xml file.",
         )
 
-        return False
-
-    return True
+    result.set_checker_status(
+        checker_bundle_name=constants.BUNDLE_NAME,
+        checker_id=CHECKER_ID,
+        status=StatusType.COMPLETED,
+    )

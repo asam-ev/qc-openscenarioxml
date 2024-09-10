@@ -2,7 +2,6 @@ import os
 import pytest
 import test_utils
 from qc_openscenario import constants
-from qc_openscenario.checks.reference_checker import reference_constants
 from qc_baselib import Result, IssueSeverity
 
 
@@ -20,10 +19,6 @@ def test_uniquely_resolvable_positive1(
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
 
-    _ = result.get_checker_result(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=reference_constants.CHECKER_ID,
-    )
     assert (
         len(
             result.get_issues_by_rule_uid(
@@ -50,10 +45,6 @@ def test_uniquely_resolvable_positive2(
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
 
-    _ = result.get_checker_result(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=reference_constants.CHECKER_ID,
-    )
     assert (
         len(
             result.get_issues_by_rule_uid(
@@ -102,10 +93,6 @@ def test_long_catalog_negative(
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
 
-    _ = result.get_checker_result(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=reference_constants.CHECKER_ID,
-    )
     reference_issues = result.get_issues_by_rule_uid(
         "asam.net:xosc:1.2.0:reference_control.uniquely_resolvable_entity_references"
     )
@@ -128,10 +115,6 @@ def test_long_catalog_positive(
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
 
-    _ = result.get_checker_result(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=reference_constants.CHECKER_ID,
-    )
     assert (
         len(
             result.get_issues_by_rule_uid(
@@ -156,10 +139,6 @@ def test_minimum_version(
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
 
-    _ = result.get_checker_result(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=reference_constants.CHECKER_ID,
-    )
     # 0 issues because minumum version is not met and the check is not performed
     # (even if it is a negative sample)
     assert (
@@ -186,10 +165,6 @@ def test_traffic_signal_state_positive(
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
 
-    _ = result.get_checker_result(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=reference_constants.CHECKER_ID,
-    )
     assert (
         len(
             result.get_issues_by_rule_uid(
@@ -214,11 +189,6 @@ def test_traffic_signal_state_negative(
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
 
-    _ = result.get_checker_result(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=reference_constants.CHECKER_ID,
-    )
-
     reference_issues = result.get_issues_by_rule_uid(
         "asam.net:xosc:1.2.0:reference_control.resolvable_signal_id_in_traffic_signal_state_action"
     )
@@ -241,10 +211,6 @@ def test_traffic_signal_controller_positive(
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
 
-    _ = result.get_checker_result(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=reference_constants.CHECKER_ID,
-    )
     assert (
         len(
             result.get_issues_by_rule_uid(
@@ -269,11 +235,6 @@ def test_traffic_signal_controller_negative(
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
 
-    _ = result.get_checker_result(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=reference_constants.CHECKER_ID,
-    )
-
     reference_issues = result.get_issues_by_rule_uid(
         "asam.net:xosc:1.2.0:reference_control.resolvable_traffic_signal_controller_by_traffic_signal_controller_ref"
     )
@@ -295,11 +256,6 @@ def test_traffic_signal_controller_multiple_negative(
 
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
-
-    _ = result.get_checker_result(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=reference_constants.CHECKER_ID,
-    )
 
     reference_issues = result.get_issues_by_rule_uid(
         "asam.net:xosc:1.2.0:reference_control.resolvable_traffic_signal_controller_by_traffic_signal_controller_ref"
@@ -328,10 +284,6 @@ def test_valid_actor_reference_in_private_actions_positive(
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
 
-    _ = result.get_checker_result(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=reference_constants.CHECKER_ID,
-    )
     assert (
         len(
             result.get_issues_by_rule_uid(
@@ -356,10 +308,6 @@ def test_valid_actor_reference_in_private_actions_positive_with_entity(
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
 
-    _ = result.get_checker_result(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=reference_constants.CHECKER_ID,
-    )
     assert (
         len(
             result.get_issues_by_rule_uid(
@@ -386,11 +334,6 @@ def test_valid_actor_reference_in_private_actions_negative(
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
 
-    _ = result.get_checker_result(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=reference_constants.CHECKER_ID,
-    )
-
     reference_issues = result.get_issues_by_rule_uid(
         "asam.net:xosc:1.2.0:reference_control.valid_actor_reference_in_private_actions"
     )
@@ -413,10 +356,6 @@ def test_resolvable_entity_reference_positive(
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
 
-    _ = result.get_checker_result(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=reference_constants.CHECKER_ID,
-    )
     assert (
         len(
             result.get_issues_by_rule_uid(
@@ -441,11 +380,6 @@ def test_resolvable_entity_reference_negative(
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
 
-    _ = result.get_checker_result(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=reference_constants.CHECKER_ID,
-    )
-
     reference_issues = result.get_issues_by_rule_uid(
         "asam.net:xosc:1.2.0:reference_control.resolvable_entity_references"
     )
@@ -469,11 +403,6 @@ def test_resolvable_entity_reference_negative_multiple(
 
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
-
-    _ = result.get_checker_result(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=reference_constants.CHECKER_ID,
-    )
 
     reference_issues = result.get_issues_by_rule_uid(
         "asam.net:xosc:1.2.0:reference_control.resolvable_entity_references"
@@ -500,10 +429,6 @@ def test_resolvable_variable_reference_positive(
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
 
-    _ = result.get_checker_result(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=reference_constants.CHECKER_ID,
-    )
     assert (
         len(
             result.get_issues_by_rule_uid(
@@ -528,11 +453,6 @@ def test_resolvable_variable_reference_negative(
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
 
-    _ = result.get_checker_result(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=reference_constants.CHECKER_ID,
-    )
-
     reference_issues = result.get_issues_by_rule_uid(
         "asam.net:xosc:1.2.0:reference_control.resolvable_variable_reference"
     )
@@ -556,11 +476,6 @@ def test_resolvable_variable_reference_multiple(
 
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
-
-    _ = result.get_checker_result(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=reference_constants.CHECKER_ID,
-    )
 
     reference_issues = result.get_issues_by_rule_uid(
         "asam.net:xosc:1.2.0:reference_control.resolvable_variable_reference"
@@ -589,10 +504,6 @@ def test_resolvable_storyboard_element_reference_positive(
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
 
-    _ = result.get_checker_result(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=reference_constants.CHECKER_ID,
-    )
     assert (
         len(
             result.get_issues_by_rule_uid(
@@ -619,10 +530,6 @@ def test_resolvable_storyboard_element_reference_positive_parameter(
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
 
-    _ = result.get_checker_result(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=reference_constants.CHECKER_ID,
-    )
     assert (
         len(
             result.get_issues_by_rule_uid(
@@ -646,11 +553,6 @@ def test_resolvable_storyboard_element_reference_negative(
 
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
-
-    _ = result.get_checker_result(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=reference_constants.CHECKER_ID,
-    )
 
     reference_issues = result.get_issues_by_rule_uid(
         "asam.net:xosc:1.2.0:reference_control.resolvable_storyboard_element_reference"
@@ -680,11 +582,6 @@ def test_resolvable_storyboard_element_reference_negative_parameter(
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
 
-    _ = result.get_checker_result(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=reference_constants.CHECKER_ID,
-    )
-
     reference_issues = result.get_issues_by_rule_uid(
         "asam.net:xosc:1.2.0:reference_control.resolvable_storyboard_element_reference"
     )
@@ -707,10 +604,6 @@ def test_unique_element_names_on_same_level_positive(
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
 
-    _ = result.get_checker_result(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=reference_constants.CHECKER_ID,
-    )
     assert (
         len(
             result.get_issues_by_rule_uid(
@@ -735,10 +628,6 @@ def test_unique_element_names_on_same_level_positive_multiple(
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
 
-    _ = result.get_checker_result(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=reference_constants.CHECKER_ID,
-    )
     assert (
         len(
             result.get_issues_by_rule_uid(
@@ -763,11 +652,6 @@ def test_unique_element_names_on_same_level_negative(
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
 
-    _ = result.get_checker_result(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=reference_constants.CHECKER_ID,
-    )
-
     reference_issues = result.get_issues_by_rule_uid(
         "asam.net:xosc:1.2.0:reference_control.unique_element_names_on_same_level"
     )
@@ -789,11 +673,6 @@ def test_unique_element_names_on_same_level_negative_multiple(
 
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
-
-    _ = result.get_checker_result(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=reference_constants.CHECKER_ID,
-    )
 
     reference_issues = result.get_issues_by_rule_uid(
         "asam.net:xosc:1.2.0:reference_control.unique_element_names_on_same_level"

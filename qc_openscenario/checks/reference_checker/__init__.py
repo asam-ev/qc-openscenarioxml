@@ -1,4 +1,3 @@
-from . import reference_constants as reference_constants
 from . import reference_checker as reference_checker
 from . import (
     uniquely_resolvable_entity_references as uniquely_resolvable_entity_references,
@@ -18,3 +17,4 @@ from . import (
     resolvable_storyboard_element_reference as resolvable_storyboard_element_reference,
 )
 from . import unique_element_names_on_same_level as unique_element_names_on_same_level
+from . import reference_checker_precondition as reference_checker_precondition

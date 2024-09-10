@@ -2,7 +2,6 @@ import os
 import pytest
 import test_utils
 from qc_openscenario import constants
-from qc_openscenario.checks.basic_checker import basic_constants
 from qc_baselib import Result, IssueSeverity
 
 
