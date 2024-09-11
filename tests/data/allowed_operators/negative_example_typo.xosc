@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <OpenSCENARIO xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <FileHeader revMajor="1" revMinor="2" date="2020-02-21T10:00:00"
+    <FileHeader revMajor="1" revMinor="3" date="2020-02-21T10:00:00"
         description="Test allowed operators"
         author="ASAM e.V." />
     <ParameterDeclarations />

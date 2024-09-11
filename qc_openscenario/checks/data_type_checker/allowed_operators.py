@@ -1,23 +1,23 @@
-import os, logging
+import logging
 
 from dataclasses import dataclass
-from typing import List, Union
+from typing import Union
 
 from lxml import etree
 
-from qc_baselib import Configuration, Result, IssueSeverity
+from qc_baselib import IssueSeverity, StatusType
 
 from qc_openscenario import constants
-from qc_openscenario.schema import schema_files
 from qc_openscenario.checks import utils, models
 
-from qc_openscenario.checks.data_type_checker import data_type_constants
+from qc_openscenario.checks.data_type_checker import data_type_checker_precondition
 
 import re
 import enum
 
+CHECKER_ID = "check_asam_xosc_data_type_allowed_operators"
 MIN_RULE_VERSION = "1.2.0"
-RULE_SEVERITY = IssueSeverity.ERROR
+
 ALLOWED_OPERANDS = set()
 ALLOWED_OPERANDS.add("-")
 ALLOWED_OPERANDS.add("round")
@@ -29,7 +29,6 @@ ALLOWED_OPERANDS.add("*")
 ALLOWED_OPERANDS.add("/")
 ALLOWED_OPERANDS.add("%")
 ALLOWED_OPERANDS.add("+")
-ALLOWED_OPERANDS.add("-")
 ALLOWED_OPERANDS.add("not")
 ALLOWED_OPERANDS.add("and")
 ALLOWED_OPERANDS.add("or")
@@ -106,25 +105,44 @@ def check_rule(checker_data: models.CheckerData) -> None:
     """
     logging.info("Executing allowed_operators check")
 
-    schema_version = checker_data.schema_version
-    if schema_version is None:
-        logging.info(f"- Version not found in the file. Skipping check")
-        return
-
-    if utils.compare_versions(schema_version, MIN_RULE_VERSION) < 0:
-        logging.info(
-            f"- Version {schema_version} is less than minimum required version {MIN_RULE_VERSION}. Skipping check"
-        )
-        return
+    checker_data.result.register_checker(
+        checker_bundle_name=constants.BUNDLE_NAME,
+        checker_id=CHECKER_ID,
+        description="Expressions in OpenSCENARIO must only use the allowed operands.",
+    )
 
     rule_uid = checker_data.result.register_rule(
         checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=data_type_constants.CHECKER_ID,
+        checker_id=CHECKER_ID,
         emanating_entity="asam.net",
         standard="xosc",
         definition_setting=MIN_RULE_VERSION,
         rule_full_name="data_type.allowed_operators",
     )
+
+    if not checker_data.result.all_checkers_completed_without_issue(
+        data_type_checker_precondition.PRECONDITIONS
+    ):
+        checker_data.result.set_checker_status(
+            checker_bundle_name=constants.BUNDLE_NAME,
+            checker_id=CHECKER_ID,
+            status=StatusType.SKIPPED,
+        )
+
+        return
+
+    schema_version = checker_data.schema_version
+    if (
+        schema_version is None
+        or utils.compare_versions(schema_version, MIN_RULE_VERSION) < 0
+    ):
+        checker_data.result.set_checker_status(
+            checker_bundle_name=constants.BUNDLE_NAME,
+            checker_id=CHECKER_ID,
+            status=StatusType.SKIPPED,
+        )
+
+        return
 
     tree = checker_data.input_file_xml_root
     root = tree.getroot()
@@ -168,15 +186,21 @@ def check_rule(checker_data: models.CheckerData) -> None:
 
                 issue_id = checker_data.result.register_issue(
                     checker_bundle_name=constants.BUNDLE_NAME,
-                    checker_id=data_type_constants.CHECKER_ID,
+                    checker_id=CHECKER_ID,
                     description="Issue flagging invalid operand is used within expression",
-                    level=RULE_SEVERITY,
+                    level=IssueSeverity.ERROR,
                     rule_uid=rule_uid,
                 )
                 checker_data.result.add_xml_location(
                     checker_bundle_name=constants.BUNDLE_NAME,
-                    checker_id=data_type_constants.CHECKER_ID,
+                    checker_id=CHECKER_ID,
                     issue_id=issue_id,
                     xpath=xpath,
                     description=f"Invalid operand {token} used",
                 )
+
+    checker_data.result.set_checker_status(
+        checker_bundle_name=constants.BUNDLE_NAME,
+        checker_id=CHECKER_ID,
+        status=StatusType.COMPLETED,
+    )

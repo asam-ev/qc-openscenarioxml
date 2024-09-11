@@ -1,9 +1,8 @@
 import os
 import pytest
 import test_utils
-from qc_openscenario import constants
-from qc_openscenario.checks.parameters_checker import parameters_constants
-from qc_baselib import Result, IssueSeverity
+from qc_baselib import Result, IssueSeverity, StatusType
+from qc_openscenario.checks import parameters_checker
 
 
 def test_valid_parameter_declaration_in_catalogs_positive(
@@ -21,6 +20,13 @@ def test_valid_parameter_declaration_in_catalogs_positive(
 
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
+
+    assert (
+        result.get_checker_status(
+            parameters_checker.valid_parameter_declaration_in_catalogs.CHECKER_ID
+        )
+        == StatusType.COMPLETED
+    )
 
     assert (
         len(
@@ -50,9 +56,11 @@ def test_valid_parameter_declaration_in_catalogs_negative(
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
 
-    _ = result.get_checker_result(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=parameters_constants.CHECKER_ID,
+    assert (
+        result.get_checker_status(
+            parameters_checker.valid_parameter_declaration_in_catalogs.CHECKER_ID
+        )
+        == StatusType.COMPLETED
     )
 
     parameters_issues = result.get_issues_by_rule_uid(
@@ -79,9 +87,11 @@ def test_valid_parameter_declaration_in_catalogs_negative_no_default(
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
 
-    _ = result.get_checker_result(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=parameters_constants.CHECKER_ID,
+    assert (
+        result.get_checker_status(
+            parameters_checker.valid_parameter_declaration_in_catalogs.CHECKER_ID
+        )
+        == StatusType.COMPLETED
     )
 
     parameters_issues = result.get_issues_by_rule_uid(
@@ -108,9 +118,11 @@ def test_valid_parameter_declaration_in_catalogs_negative_multiple(
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
 
-    _ = result.get_checker_result(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=parameters_constants.CHECKER_ID,
+    assert (
+        result.get_checker_status(
+            parameters_checker.valid_parameter_declaration_in_catalogs.CHECKER_ID
+        )
+        == StatusType.COMPLETED
     )
 
     parameters_issues = result.get_issues_by_rule_uid(

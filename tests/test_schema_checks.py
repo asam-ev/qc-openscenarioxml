@@ -1,8 +1,8 @@
 import os
 import pytest
 import test_utils
-from qc_openscenario import constants
-from qc_baselib import Result, IssueSeverity
+from qc_baselib import Result, IssueSeverity, StatusType
+from qc_openscenario.checks import schema_checker
 
 
 def test_valid_schema_positive(
@@ -18,6 +18,11 @@ def test_valid_schema_positive(
 
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
+
+    assert (
+        result.get_checker_status(schema_checker.valid_schema.CHECKER_ID)
+        == StatusType.COMPLETED
+    )
 
     assert (
         len(result.get_issues_by_rule_uid("asam.net:xosc:1.0.0:xml.valid_schema")) == 0
@@ -41,7 +46,12 @@ def test_valid_schema_negative(
     result.load_from_file(test_utils.REPORT_FILE_PATH)
 
     assert (
-        len(result.get_issues_by_rule_uid("asam.net:xosc:1.0.0:xml.valid_schema")) == 0
+        result.get_checker_status(schema_checker.valid_schema.CHECKER_ID)
+        == StatusType.COMPLETED
+    )
+
+    assert (
+        len(result.get_issues_by_rule_uid("asam.net:xosc:1.0.0:xml.valid_schema")) == 1
     )
     test_utils.cleanup_files()
 
@@ -59,6 +69,11 @@ def test_unsupported_schema_version(
 
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
+
+    assert (
+        result.get_checker_status(schema_checker.valid_schema.CHECKER_ID)
+        == StatusType.SKIPPED
+    )
 
     assert (
         len(result.get_issues_by_rule_uid("asam.net:xosc:1.0.0:xml.valid_schema")) == 0
@@ -79,6 +94,11 @@ def test_invalid_schema(
 
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
+
+    assert (
+        result.get_checker_status(schema_checker.valid_schema.CHECKER_ID)
+        == StatusType.COMPLETED
+    )
 
     xml_schema_issues = result.get_issues_by_rule_uid(
         "asam.net:xosc:1.0.0:xml.valid_schema"
