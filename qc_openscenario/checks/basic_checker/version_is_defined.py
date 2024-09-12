@@ -1,11 +1,21 @@
 import logging
 from lxml import etree
-from qc_baselib import IssueSeverity, Result
+from qc_baselib import IssueSeverity, Result, StatusType
 
 from qc_openscenario import constants
-from qc_openscenario.checks import models
 
-from qc_openscenario.checks.basic_checker import basic_constants
+from qc_openscenario.checks.basic_checker import (
+    valid_xml_document,
+    root_tag_is_openscenario,
+    fileheader_is_present,
+)
+
+CHECKER_ID = "check_asam_xosc_xml_version_is_defined"
+PRECONDITIONS = {
+    valid_xml_document.CHECKER_ID,
+    root_tag_is_openscenario.CHECKER_ID,
+    fileheader_is_present.CHECKER_ID,
+}
 
 
 def is_unsigned_short(value: int) -> bool:
@@ -17,7 +27,7 @@ def is_unsigned_short(value: int) -> bool:
         return False
 
 
-def check_rule(tree: etree._ElementTree, result: Result) -> bool:
+def check_rule(tree: etree._ElementTree, result: Result) -> None:
     """
     The FileHeader tag must have the attributes revMajor and revMinor and of type unsignedShort.
 
@@ -26,14 +36,29 @@ def check_rule(tree: etree._ElementTree, result: Result) -> bool:
     """
     logging.info("Executing version_is_defined check")
 
+    result.register_checker(
+        checker_bundle_name=constants.BUNDLE_NAME,
+        checker_id=CHECKER_ID,
+        description="The FileHeader tag must have the attributes revMajor and revMinor and of type unsignedShort.",
+    )
+
     rule_uid = result.register_rule(
         checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=basic_constants.CHECKER_ID,
+        checker_id=CHECKER_ID,
         emanating_entity="asam.net",
         standard="xosc",
         definition_setting="1.0.0",
         rule_full_name="xml.version_is_defined",
     )
+
+    if not result.all_checkers_completed_without_issue(PRECONDITIONS):
+        result.set_checker_status(
+            checker_bundle_name=constants.BUNDLE_NAME,
+            checker_id=CHECKER_ID,
+            status=StatusType.SKIPPED,
+        )
+
+        return
 
     root = tree.getroot()
 
@@ -68,7 +93,7 @@ def check_rule(tree: etree._ElementTree, result: Result) -> bool:
 
         issue_id = result.register_issue(
             checker_bundle_name=constants.BUNDLE_NAME,
-            checker_id=basic_constants.CHECKER_ID,
+            checker_id=CHECKER_ID,
             description="Issue flagging when revMajor revMinor attribute of FileHeader are missing or invalid",
             level=IssueSeverity.ERROR,
             rule_uid=rule_uid,
@@ -76,12 +101,14 @@ def check_rule(tree: etree._ElementTree, result: Result) -> bool:
 
         result.add_xml_location(
             checker_bundle_name=constants.BUNDLE_NAME,
-            checker_id=basic_constants.CHECKER_ID,
+            checker_id=CHECKER_ID,
             issue_id=issue_id,
             xpath=tree.getpath(file_header_tag),
             description=f'"FileHeader" tag has invalid or missing version info',
         )
 
-        return False
-
-    return True
+    result.set_checker_status(
+        checker_bundle_name=constants.BUNDLE_NAME,
+        checker_id=CHECKER_ID,
+        status=StatusType.COMPLETED,
+    )

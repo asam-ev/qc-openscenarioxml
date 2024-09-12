@@ -1,9 +1,8 @@
 import os
 import pytest
 import test_utils
-from qc_openscenario import constants
-from qc_openscenario.checks.basic_checker import basic_constants
-from qc_baselib import Result, IssueSeverity
+from qc_baselib import Result, IssueSeverity, StatusType
+from qc_openscenario.checks import basic_checker
 
 
 def test_valid_xml_document_positive(
@@ -20,6 +19,10 @@ def test_valid_xml_document_positive(
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
 
+    assert (
+        result.get_checker_status(basic_checker.valid_xml_document.CHECKER_ID)
+        == StatusType.COMPLETED
+    )
     assert (
         len(result.get_issues_by_rule_uid("asam.net:xosc:1.0.0:xml.valid_xml_document"))
         == 0
@@ -41,6 +44,11 @@ def test_valid_xml_document_negative(
 
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
+
+    assert (
+        result.get_checker_status(basic_checker.valid_xml_document.CHECKER_ID)
+        == StatusType.COMPLETED
+    )
 
     xml_doc_issues = result.get_issues_by_rule_uid(
         "asam.net:xosc:1.0.0:xml.valid_xml_document"
@@ -64,6 +72,7 @@ def test_parametric_input_xodr(
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
 
+    assert result.all_checkers_completed() == True
     assert result.get_issue_count() == 0
     test_utils.cleanup_files()
 
@@ -82,6 +91,7 @@ def test_parametric_entity_ref(
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
 
+    assert result.all_checkers_completed() == True
     assert result.get_issue_count() == 0
     test_utils.cleanup_files()
 
@@ -119,6 +129,11 @@ def test_root_tag_is_openscenario_positive(
     result.load_from_file(test_utils.REPORT_FILE_PATH)
 
     assert (
+        result.get_checker_status(basic_checker.root_tag_is_openscenario.CHECKER_ID)
+        == StatusType.COMPLETED
+    )
+
+    assert (
         len(
             result.get_issues_by_rule_uid(
                 "asam.net:xosc:1.0.0:xml.root_tag_is_openscenario"
@@ -144,6 +159,11 @@ def test_root_tag_is_openscenario_negative(
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
 
+    assert (
+        result.get_checker_status(basic_checker.valid_xml_document.CHECKER_ID)
+        == StatusType.COMPLETED
+    )
+
     xml_doc_issues = result.get_issues_by_rule_uid(
         "asam.net:xosc:1.0.0:xml.root_tag_is_openscenario"
     )
@@ -165,6 +185,11 @@ def test_fileheader_is_present_positive(
 
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
+
+    assert (
+        result.get_checker_status(basic_checker.fileheader_is_present.CHECKER_ID)
+        == StatusType.COMPLETED
+    )
 
     assert (
         len(
@@ -192,6 +217,11 @@ def test_fileheader_is_present_negative(
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
 
+    assert (
+        result.get_checker_status(basic_checker.fileheader_is_present.CHECKER_ID)
+        == StatusType.COMPLETED
+    )
+
     xml_doc_issues = result.get_issues_by_rule_uid(
         "asam.net:xosc:1.0.0:xml.fileheader_is_present"
     )
@@ -200,7 +230,7 @@ def test_fileheader_is_present_negative(
     test_utils.cleanup_files()
 
 
-def test_version_is_defined__positive(
+def test_version_is_defined_positive(
     monkeypatch,
 ) -> None:
     base_path = "tests/data/version_is_defined/"
@@ -213,6 +243,11 @@ def test_version_is_defined__positive(
 
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
+
+    assert (
+        result.get_checker_status(basic_checker.version_is_defined.CHECKER_ID)
+        == StatusType.COMPLETED
+    )
 
     assert (
         len(result.get_issues_by_rule_uid("asam.net:xosc:1.0.0:xml.version_is_defined"))
@@ -236,6 +271,11 @@ def test_version_is_defined_negative_attr(
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
 
+    assert (
+        result.get_checker_status(basic_checker.version_is_defined.CHECKER_ID)
+        == StatusType.COMPLETED
+    )
+
     xml_doc_issues = result.get_issues_by_rule_uid(
         "asam.net:xosc:1.0.0:xml.version_is_defined"
     )
@@ -257,6 +297,11 @@ def test_version_is_defined_negative_type(
 
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
+
+    assert (
+        result.get_checker_status(basic_checker.version_is_defined.CHECKER_ID)
+        == StatusType.COMPLETED
+    )
 
     xml_doc_issues = result.get_issues_by_rule_uid(
         "asam.net:xosc:1.0.0:xml.version_is_defined"

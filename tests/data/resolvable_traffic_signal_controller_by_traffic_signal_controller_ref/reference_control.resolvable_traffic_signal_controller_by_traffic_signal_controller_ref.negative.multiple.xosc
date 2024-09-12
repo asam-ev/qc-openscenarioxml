@@ -45,12 +45,24 @@
             <TrafficSignalAction>
               <TrafficSignalControllerAction trafficSignalControllerRef="1234" phase="stop" />
             </TrafficSignalAction>
+          </InfrastructureAction>
+        </GlobalAction>
+        <GlobalAction>
+          <InfrastructureAction>
             <TrafficSignalAction>
               <TrafficSignalControllerAction trafficSignalControllerRef="4567" phase="stop" />
             </TrafficSignalAction>
+          </InfrastructureAction>
+        </GlobalAction>
+        <GlobalAction>
+          <InfrastructureAction>
             <TrafficSignalAction>
               <TrafficSignalControllerAction trafficSignalControllerRef="bar" phase="stop" />
             </TrafficSignalAction>
+          </InfrastructureAction>
+        </GlobalAction>
+        <GlobalAction>
+          <InfrastructureAction>
             <TrafficSignalAction>
               <TrafficSignalControllerAction trafficSignalControllerRef="0000" phase="stop" />
             </TrafficSignalAction>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <OpenSCENARIO xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <FileHeader revMajor="1" revMinor="2" date="2020-02-21T10:00:00"
+    <FileHeader revMajor="1" revMinor="3" date="2020-02-21T10:00:00"
         description="Test allowed operators"
         author="ASAM e.V." />
     <ParameterDeclarations />
@@ -14,14 +14,50 @@
                 <Private entityRef="${round(1.3) % ceil(1.23) - sqrt(18.23} +7-321/65.32">
                     <PrivateAction>
                         <AppearanceAction>
-                            <!-- "powerer" not supported operation in expression -->
-                            <LightStateAction transitionTime="${powerer(2, 3)}">
+                            <LightStateAction transitionTime="${pow(2, 3)}">
                                 <LightType>
-                                    <!-- Character ^ not supported in expression -->
-                                    <VehicleLight vehicleLightType="${2*3+4^23}" />
+                                    <VehicleLight vehicleLightType="fogLights" />
                                 </LightType>
-                                <!-- Character ^ not supported in expression -->
-                                <LightState mode="${3^$foo}" />
+                                <LightState mode="on" />
+                            </LightStateAction>
+                        </AppearanceAction>
+                    </PrivateAction>
+                </Private>
+                <!-- "powerer" not supported operation in expression -->
+                <Private entityRef="${powerer(2, 3)}">
+                    <PrivateAction>
+                        <AppearanceAction>
+                            <LightStateAction transitionTime="${pow(2, 3)}">
+                                <LightType>
+                                    <VehicleLight vehicleLightType="fogLights" />
+                                </LightType>
+                                <LightState mode="on" />
+                            </LightStateAction>
+                        </AppearanceAction>
+                    </PrivateAction>
+                </Private>
+                <!-- Character ^ not supported in expression -->
+                <Private entityRef="${2*3+4^23}">
+                    <PrivateAction>
+                        <AppearanceAction>
+                            <LightStateAction transitionTime="${pow(2, 3)}">
+                                <LightType>
+                                    <VehicleLight vehicleLightType="fogLights" />
+                                </LightType>
+                                <LightState mode="on" />
+                            </LightStateAction>
+                        </AppearanceAction>
+                    </PrivateAction>
+                </Private>
+                <!-- Character ^ not supported in expression -->
+                <Private entityRef="${3^$foo}">
+                    <PrivateAction>
+                        <AppearanceAction>
+                            <LightStateAction transitionTime="${pow(2, 3)}">
+                                <LightType>
+                                    <VehicleLight vehicleLightType="fogLights" />
+                                </LightType>
+                                <LightState mode="on" />
                             </LightStateAction>
                         </AppearanceAction>
                     </PrivateAction>

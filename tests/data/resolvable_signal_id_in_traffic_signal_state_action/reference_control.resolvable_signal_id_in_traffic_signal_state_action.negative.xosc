@@ -27,9 +27,7 @@
         <GlobalAction>
           <InfrastructureAction>
             <TrafficSignalAction>
-              <TrafficSignalStateAction name="12346" state="on;off;off">
-                <!--Inserted rule violation because signal 12346 doesn't exist in road network file.-->
-              </TrafficSignalStateAction>
+              <TrafficSignalStateAction name="12346" state="on;off;off"/>
             </TrafficSignalAction>
           </InfrastructureAction>
         </GlobalAction>
