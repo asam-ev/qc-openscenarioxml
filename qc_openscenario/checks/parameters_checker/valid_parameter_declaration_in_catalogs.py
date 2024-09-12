@@ -1,20 +1,15 @@
-import os, logging
+import logging
 
-from dataclasses import dataclass
-from typing import List
 
-from lxml import etree
-
-from qc_baselib import Configuration, Result, IssueSeverity
+from qc_baselib import IssueSeverity, StatusType
 
 from qc_openscenario import constants
-from qc_openscenario.schema import schema_files
 from qc_openscenario.checks import utils, models
 
-from qc_openscenario.checks.parameters_checker import parameters_constants
+from qc_openscenario.checks.parameters_checker import parameter_checker_precondition
 
+CHECKER_ID = "check_asam_xosc_parameters_valid_parameter_declaration_in_catalogs"
 MIN_RULE_VERSION = "1.2.0"
-RULE_SEVERITY = IssueSeverity.ERROR
 
 
 def check_rule(checker_data: models.CheckerData) -> None:
@@ -35,30 +30,57 @@ def check_rule(checker_data: models.CheckerData) -> None:
     """
     logging.info("Executing valid_parameter_declaration_in_catalogs check")
 
-    schema_version = checker_data.schema_version
-    if schema_version is None:
-        logging.info(f"- Version not found in the file. Skipping check")
-        return
-    if utils.compare_versions(schema_version, MIN_RULE_VERSION) < 0:
-        logging.info(
-            f"- Version {schema_version} is less than minimum required version {MIN_RULE_VERSION}. Skipping check"
-        )
-        return
+    checker_data.result.register_checker(
+        checker_bundle_name=constants.BUNDLE_NAME,
+        checker_id=CHECKER_ID,
+        description="All parameters used within a catalog shall be declared within their ParameterDeclaration in the same catalog, which sets a default value for each parameter.",
+    )
 
     rule_uid = checker_data.result.register_rule(
         checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=parameters_constants.CHECKER_ID,
+        checker_id=CHECKER_ID,
         emanating_entity="asam.net",
         standard="xosc",
         definition_setting=MIN_RULE_VERSION,
         rule_full_name="parameters.valid_parameter_declaration_in_catalogs",
     )
 
+    if not checker_data.result.all_checkers_completed_without_issue(
+        parameter_checker_precondition.PRECONDITIONS
+    ):
+        checker_data.result.set_checker_status(
+            checker_bundle_name=constants.BUNDLE_NAME,
+            checker_id=CHECKER_ID,
+            status=StatusType.SKIPPED,
+        )
+
+        return
+
+    schema_version = checker_data.schema_version
+    if (
+        schema_version is None
+        or utils.compare_versions(schema_version, MIN_RULE_VERSION) < 0
+    ):
+        checker_data.result.set_checker_status(
+            checker_bundle_name=constants.BUNDLE_NAME,
+            checker_id=CHECKER_ID,
+            status=StatusType.SKIPPED,
+        )
+
+        return
+
     root = checker_data.input_file_xml_root
 
     catalogs_node = root.findall(".//Catalog")
     if catalogs_node is None:
         logging.error("Cannot find Catalog nodes in provided XOSC file. Skipping check")
+
+        checker_data.result.set_checker_status(
+            checker_bundle_name=constants.BUNDLE_NAME,
+            checker_id=CHECKER_ID,
+            status=StatusType.SKIPPED,
+        )
+
         return
 
     logging.debug(f"catalogs_node : {catalogs_node}")
@@ -104,15 +126,21 @@ def check_rule(checker_data: models.CheckerData) -> None:
 
                     issue_id = checker_data.result.register_issue(
                         checker_bundle_name=constants.BUNDLE_NAME,
-                        checker_id=parameters_constants.CHECKER_ID,
+                        checker_id=CHECKER_ID,
                         description="Issue flagging when used parameters is not defined or has not default value within a catalog",
-                        level=RULE_SEVERITY,
+                        level=IssueSeverity.ERROR,
                         rule_uid=rule_uid,
                     )
                     checker_data.result.add_xml_location(
                         checker_bundle_name=constants.BUNDLE_NAME,
-                        checker_id=parameters_constants.CHECKER_ID,
+                        checker_id=CHECKER_ID,
                         issue_id=issue_id,
                         xpath=xpath,
                         description=f"Parameter value {attr_value[1:]} for attribute {attr_name} is not defined in Catalog or has no default value",
                     )
+
+    checker_data.result.set_checker_status(
+        checker_bundle_name=constants.BUNDLE_NAME,
+        checker_id=CHECKER_ID,
+        status=StatusType.COMPLETED,
+    )

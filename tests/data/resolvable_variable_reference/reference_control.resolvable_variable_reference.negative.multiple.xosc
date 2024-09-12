@@ -35,14 +35,20 @@
                     <VariableAction variableRef="startingXPosition">
                         <SetAction value="1.0" />
                     </VariableAction>
+                </GlobalAction>
+                <GlobalAction>
                     <VariableAction variableRef="startingYPosition">
                         <SetAction value="1.0" />
                     </VariableAction>
+                </GlobalAction>
+                <GlobalAction>
                     <!-- Inserted rule violation since "unknownReferenceForYPosition" does not
                     exist. -->
                     <VariableAction variableRef="unknownReferenceForYPosition">
                         <SetAction value="1.0" />
                     </VariableAction>
+                </GlobalAction>
+                <GlobalAction>
                     <!-- Inserted rule violation since "foo" does not
                     exist. -->
                     <VariableAction variableRef="foo">

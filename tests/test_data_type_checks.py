@@ -1,9 +1,8 @@
 import os
 import pytest
 import test_utils
-from qc_openscenario import constants
-from qc_openscenario.checks.data_type_checker import data_type_constants
-from qc_baselib import Result, IssueSeverity
+from qc_baselib import Result, IssueSeverity, StatusType
+from qc_openscenario.checks import data_type_checker
 
 
 def test_positive_duration_in_phase_positive(
@@ -19,6 +18,13 @@ def test_positive_duration_in_phase_positive(
 
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
+
+    assert (
+        result.get_checker_status(
+            data_type_checker.positive_duration_in_phase.CHECKER_ID
+        )
+        == StatusType.COMPLETED
+    )
 
     assert (
         len(
@@ -47,6 +53,13 @@ def test_positive_duration_in_phase_positive_parameter(
     result.load_from_file(test_utils.REPORT_FILE_PATH)
 
     assert (
+        result.get_checker_status(
+            data_type_checker.positive_duration_in_phase.CHECKER_ID
+        )
+        == StatusType.COMPLETED
+    )
+
+    assert (
         len(
             result.get_issues_by_rule_uid(
                 "asam.net:xosc:1.2.0:data_type.positive_duration_in_phase"
@@ -72,9 +85,11 @@ def test_positive_duration_in_phase_negative(
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
 
-    _ = result.get_checker_result(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=data_type_constants.CHECKER_ID,
+    assert (
+        result.get_checker_status(
+            data_type_checker.positive_duration_in_phase.CHECKER_ID
+        )
+        == StatusType.COMPLETED
     )
 
     data_type_issues = result.get_issues_by_rule_uid(
@@ -99,9 +114,11 @@ def test_positive_duration_in_phase_negative_parameter(
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
 
-    _ = result.get_checker_result(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=data_type_constants.CHECKER_ID,
+    assert (
+        result.get_checker_status(
+            data_type_checker.positive_duration_in_phase.CHECKER_ID
+        )
+        == StatusType.COMPLETED
     )
 
     data_type_issues = result.get_issues_by_rule_uid(
@@ -125,6 +142,11 @@ def test_allowed_operators_positive(
 
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
+
+    assert (
+        result.get_checker_status(data_type_checker.allowed_operators.CHECKER_ID)
+        == StatusType.COMPLETED
+    )
 
     assert (
         len(
@@ -153,6 +175,11 @@ def test_allowed_operators_positive_param(
     result.load_from_file(test_utils.REPORT_FILE_PATH)
 
     assert (
+        result.get_checker_status(data_type_checker.allowed_operators.CHECKER_ID)
+        == StatusType.COMPLETED
+    )
+
+    assert (
         len(
             result.get_issues_by_rule_uid(
                 "asam.net:xosc:1.2.0:data_type.allowed_operators"
@@ -177,6 +204,11 @@ def test_allowed_operators_positive_multiple(
 
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
+
+    assert (
+        result.get_checker_status(data_type_checker.allowed_operators.CHECKER_ID)
+        == StatusType.COMPLETED
+    )
 
     assert (
         len(
@@ -205,6 +237,11 @@ def test_trailer_connect_standard_example(
     result.load_from_file(test_utils.REPORT_FILE_PATH)
 
     assert (
+        result.get_checker_status(data_type_checker.allowed_operators.CHECKER_ID)
+        == StatusType.COMPLETED
+    )
+
+    assert (
         len(
             result.get_issues_by_rule_uid(
                 "asam.net:xosc:1.2.0:data_type.allowed_operators"
@@ -230,9 +267,9 @@ def test_allowed_operators_negative(
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
 
-    _ = result.get_checker_result(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=data_type_constants.CHECKER_ID,
+    assert (
+        result.get_checker_status(data_type_checker.allowed_operators.CHECKER_ID)
+        == StatusType.COMPLETED
     )
 
     data_type_issues = result.get_issues_by_rule_uid(
@@ -257,9 +294,9 @@ def test_allowed_operators_negative_typo(
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
 
-    _ = result.get_checker_result(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=data_type_constants.CHECKER_ID,
+    assert (
+        result.get_checker_status(data_type_checker.allowed_operators.CHECKER_ID)
+        == StatusType.COMPLETED
     )
 
     data_type_issues = result.get_issues_by_rule_uid(
@@ -284,9 +321,9 @@ def test_allowed_operators_negative_multiple(
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
 
-    _ = result.get_checker_result(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=data_type_constants.CHECKER_ID,
+    assert (
+        result.get_checker_status(data_type_checker.allowed_operators.CHECKER_ID)
+        == StatusType.COMPLETED
     )
 
     data_type_issues = result.get_issues_by_rule_uid(
@@ -318,6 +355,13 @@ def test_non_negative_transition_time_in_light_state_action_positive(
     result.load_from_file(test_utils.REPORT_FILE_PATH)
 
     assert (
+        result.get_checker_status(
+            data_type_checker.non_negative_transition_time_in_light_state_action.CHECKER_ID
+        )
+        == StatusType.COMPLETED
+    )
+
+    assert (
         len(
             result.get_issues_by_rule_uid(
                 "asam.net:xosc:1.2.0:data_type.non_negative_transition_time_in_light_state_action"
@@ -343,9 +387,11 @@ def test_non_negative_transition_time_in_light_state_action_negative(
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
 
-    _ = result.get_checker_result(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=data_type_constants.CHECKER_ID,
+    assert (
+        result.get_checker_status(
+            data_type_checker.non_negative_transition_time_in_light_state_action.CHECKER_ID
+        )
+        == StatusType.COMPLETED
     )
 
     data_type_issues = result.get_issues_by_rule_uid(
@@ -370,9 +416,11 @@ def test_non_negative_transition_time_in_light_state_action_negative_param(
     result = Result()
     result.load_from_file(test_utils.REPORT_FILE_PATH)
 
-    _ = result.get_checker_result(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=data_type_constants.CHECKER_ID,
+    assert (
+        result.get_checker_status(
+            data_type_checker.non_negative_transition_time_in_light_state_action.CHECKER_ID
+        )
+        == StatusType.COMPLETED
     )
 
     data_type_issues = result.get_issues_by_rule_uid(

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <OpenSCENARIO>
-    <FileHeader description="Vehicle Catalog" author="ASAM" revMajor="1" revMinor="2"
+    <FileHeader description="Vehicle Catalog" author="ASAM" revMajor="1" revMinor="3"
         date="2023-11-15T11:00:00.000000" />
     <Catalog name="VehicleCatalog_1">
         <Vehicle name="car_white" vehicleCategory="car">
@@ -22,13 +22,123 @@
                     filepath="../../../external/delivery/esmini-noosg/resources/osgb/car_white.osgb" />
             </Properties>
         </Vehicle>
-        <Vehicle name="car_red" />
+        <Vehicle name="car_red" vehicleCategory="car">
+            <BoundingBox>
+                <Center x="1.4" y="0.0" z="0.9" />
+                <Dimensions width="2.0" length="5.0" height="1.8" />
+            </BoundingBox>
+            <Performance maxSpeed="69" maxDeceleration="30" maxAcceleration="5" />
+            <Axles>
+                <FrontAxle maxSteering="30" wheelDiameter="0.8" trackWidth="1.68" positionX="2.98"
+                    positionZ="0.4" />
+                <RearAxle maxSteering="30" wheelDiameter="0.8" trackWidth="1.68" positionX="0"
+                    positionZ="0.4" />
+            </Axles>
+            <Properties>
+                <Property name="control" value="internal" />
+                <Property name="model_id" value="0" />
+                <File
+                    filepath="../../../external/delivery/esmini-noosg/resources/osgb/car_white.osgb" />
+            </Properties>
+        </Vehicle>
         <Controller name="abc" />
         <Controller name="controller2" />
-        <Maneuver name="abc" />
-        <Maneuver name="maneuver2" />
-        <Route name="route1" />
-        <Route name="route2" />
+        <Maneuver name="abc">
+            <Event name="Event1" priority="override">
+                <Action name="Action1">
+                    <PrivateAction>
+                        <LateralAction>
+                            <LaneChangeAction targetLaneOffset="-0.0361164093018">
+                                <LaneChangeActionDynamics dynamicsDimension="distance"
+                                    dynamicsShape="cubic" value="54.8254917969" />
+                                <LaneChangeTarget>
+                                    <RelativeTargetLane entityRef="Ego" value="0" />
+                                </LaneChangeTarget>
+                            </LaneChangeAction>
+                        </LateralAction>
+                    </PrivateAction>
+                </Action>
+                <StartTrigger>
+                    <ConditionGroup>
+                        <Condition name="StartCondition1" delay="0" conditionEdge="rising">
+                            <ByEntityCondition>
+                                <TriggeringEntities triggeringEntitiesRule="any">
+                                    <EntityRef entityRef="$owner" />
+                                </TriggeringEntities>
+                                <EntityCondition>
+                                    <DistanceCondition value="20.0" freespace="false"
+                                        coordinateSystem="road" rule="greaterThan">
+                                        <Position>
+                                            <RelativeObjectPosition entityRef="Ego" dx="0" dy="0" />
+                                        </Position>
+                                    </DistanceCondition>
+                                </EntityCondition>
+                            </ByEntityCondition>
+                        </Condition>
+                    </ConditionGroup>
+                </StartTrigger>
+            </Event>
+        </Maneuver>
+        <Maneuver name="Maneuver2">
+            <Event name="Event1" priority="override">
+                <Action name="Action1">
+                    <PrivateAction>
+                        <LateralAction>
+                            <LaneChangeAction targetLaneOffset="-0.0361164093018">
+                                <LaneChangeActionDynamics dynamicsDimension="distance"
+                                    dynamicsShape="cubic" value="54.8254917969" />
+                                <LaneChangeTarget>
+                                    <RelativeTargetLane entityRef="Ego" value="0" />
+                                </LaneChangeTarget>
+                            </LaneChangeAction>
+                        </LateralAction>
+                    </PrivateAction>
+                </Action>
+                <StartTrigger>
+                    <ConditionGroup>
+                        <Condition name="StartCondition1" delay="0" conditionEdge="rising">
+                            <ByEntityCondition>
+                                <TriggeringEntities triggeringEntitiesRule="any">
+                                    <EntityRef entityRef="$owner" />
+                                </TriggeringEntities>
+                                <EntityCondition>
+                                    <DistanceCondition value="20.0" freespace="false"
+                                        coordinateSystem="road" rule="greaterThan">
+                                        <Position>
+                                            <RelativeObjectPosition entityRef="Ego" dx="0" dy="0" />
+                                        </Position>
+                                    </DistanceCondition>
+                                </EntityCondition>
+                            </ByEntityCondition>
+                        </Condition>
+                    </ConditionGroup>
+                </StartTrigger>
+            </Event>
+        </Maneuver>
+        <Route name="route1" closed="false">
+            <Waypoint routeStrategy="shortest">
+                <Position>
+                    <LanePosition roadId="3" laneId="-1" offset="0" s="70" />
+                </Position>
+            </Waypoint>
+            <Waypoint routeStrategy="shortest">
+                <Position>
+                    <LanePosition roadId="1" laneId="-1" offset="0" s="0" />
+                </Position>
+            </Waypoint>
+        </Route>
+        <Route name="route2" closed="false">
+            <Waypoint routeStrategy="shortest">
+                <Position>
+                    <LanePosition roadId="3" laneId="-1" offset="0" s="70" />
+                </Position>
+            </Waypoint>
+            <Waypoint routeStrategy="shortest">
+                <Position>
+                    <LanePosition roadId="1" laneId="-1" offset="0" s="0" />
+                </Position>
+            </Waypoint>
+        </Route>
 
     </Catalog>
 </OpenSCENARIO>

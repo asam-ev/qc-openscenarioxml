@@ -1,20 +1,16 @@
-import os, logging
+import logging
 
-from dataclasses import dataclass
-from typing import List
-
-from lxml import etree
-
-from qc_baselib import Configuration, Result, IssueSeverity
+from qc_baselib import IssueSeverity, StatusType
 
 from qc_openscenario import constants
-from qc_openscenario.schema import schema_files
 from qc_openscenario.checks import utils, models
 
-from qc_openscenario.checks.data_type_checker import data_type_constants
+from qc_openscenario.checks.data_type_checker import data_type_checker_precondition
 
+CHECKER_ID = (
+    "check_asam_xosc_data_type_non_negative_transition_time_in_light_state_action"
+)
 MIN_RULE_VERSION = "1.2.0"
-RULE_SEVERITY = IssueSeverity.ERROR
 
 
 def check_rule(checker_data: models.CheckerData) -> None:
@@ -34,25 +30,44 @@ def check_rule(checker_data: models.CheckerData) -> None:
     """
     logging.info("Executing non_negative_transition_time_in_light_state_action check")
 
-    schema_version = checker_data.schema_version
-    if schema_version is None:
-        logging.info(f"- Version not found in the file. Skipping check")
-        return
-
-    if utils.compare_versions(schema_version, MIN_RULE_VERSION) < 0:
-        logging.info(
-            f"- Version {schema_version} is less than minimum required version {MIN_RULE_VERSION}. Skipping check"
-        )
-        return
+    checker_data.result.register_checker(
+        checker_bundle_name=constants.BUNDLE_NAME,
+        checker_id=CHECKER_ID,
+        description="Expressions in OpenSCENARIO must only use the allowed operands.",
+    )
 
     rule_uid = checker_data.result.register_rule(
         checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=data_type_constants.CHECKER_ID,
+        checker_id=CHECKER_ID,
         emanating_entity="asam.net",
         standard="xosc",
         definition_setting=MIN_RULE_VERSION,
         rule_full_name="data_type.non_negative_transition_time_in_light_state_action",
     )
+
+    if not checker_data.result.all_checkers_completed_without_issue(
+        data_type_checker_precondition.PRECONDITIONS
+    ):
+        checker_data.result.set_checker_status(
+            checker_bundle_name=constants.BUNDLE_NAME,
+            checker_id=CHECKER_ID,
+            status=StatusType.SKIPPED,
+        )
+
+        return
+
+    schema_version = checker_data.schema_version
+    if (
+        schema_version is None
+        or utils.compare_versions(schema_version, MIN_RULE_VERSION) < 0
+    ):
+        checker_data.result.set_checker_status(
+            checker_bundle_name=constants.BUNDLE_NAME,
+            checker_id=CHECKER_ID,
+            status=StatusType.SKIPPED,
+        )
+
+        return
 
     root = checker_data.input_file_xml_root
 
@@ -98,6 +113,13 @@ def check_rule(checker_data: models.CheckerData) -> None:
             logging.error(
                 f"Cannot convert '{current_transition_time}' to double as it does not match xsd:double pattern. Skipping check..."
             )
+
+            checker_data.result.set_checker_status(
+                checker_bundle_name=constants.BUNDLE_NAME,
+                checker_id=CHECKER_ID,
+                status=StatusType.SKIPPED,
+            )
+
             return
 
         current_numeric_value = float(current_transition_time)
@@ -108,15 +130,21 @@ def check_rule(checker_data: models.CheckerData) -> None:
 
             issue_id = checker_data.result.register_issue(
                 checker_bundle_name=constants.BUNDLE_NAME,
-                checker_id=data_type_constants.CHECKER_ID,
+                checker_id=CHECKER_ID,
                 description="Issue transitionTime in LightStateAction node is negative",
-                level=RULE_SEVERITY,
+                level=IssueSeverity.ERROR,
                 rule_uid=rule_uid,
             )
             checker_data.result.add_xml_location(
                 checker_bundle_name=constants.BUNDLE_NAME,
-                checker_id=data_type_constants.CHECKER_ID,
+                checker_id=CHECKER_ID,
                 issue_id=issue_id,
                 xpath=xpath,
                 description=f"transitionTime duration {current_numeric_value} is negative",
             )
+
+    checker_data.result.set_checker_status(
+        checker_bundle_name=constants.BUNDLE_NAME,
+        checker_id=CHECKER_ID,
+        status=StatusType.COMPLETED,
+    )

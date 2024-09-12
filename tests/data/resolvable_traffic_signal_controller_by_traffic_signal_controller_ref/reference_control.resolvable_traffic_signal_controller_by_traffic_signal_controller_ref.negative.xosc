@@ -37,9 +37,7 @@
         <GlobalAction>
           <InfrastructureAction>
             <TrafficSignalAction>
-              <TrafficSignalControllerAction trafficSignalControllerRef="1235" phase="stop">
-                <!--Inserted rule violation because traffic signal controller 12346 doesn't exist in scenario.-->
-              </TrafficSignalControllerAction>
+              <TrafficSignalControllerAction trafficSignalControllerRef="1235" phase="stop"/>
             </TrafficSignalAction>
           </InfrastructureAction>
         </GlobalAction>
