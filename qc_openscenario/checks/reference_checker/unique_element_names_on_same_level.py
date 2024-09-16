@@ -10,11 +10,13 @@ from qc_baselib import IssueSeverity, StatusType
 from qc_openscenario import constants
 from qc_openscenario.checks import utils, models
 
-from qc_openscenario.checks.reference_checker import reference_checker_precondition
+from qc_openscenario import basic_preconditions
 from collections import deque, defaultdict
 
 CHECKER_ID = "check_asam_xosc_reference_control_unique_element_names_on_same_level"
-MIN_RULE_VERSION = "1.2.0"
+CHECKER_DESCRIPTION = "Element names at each level shall be unique at that level."
+CHECKER_PRECONDITIONS = basic_preconditions.CHECKER_PRECONDITIONS
+RULE_UID = "asam.net:xosc:1.2.0:reference_control.unique_element_names_on_same_level"
 
 
 @dataclass
@@ -79,45 +81,6 @@ def check_rule(checker_data: models.CheckerData) -> None:
     """
     logging.info("Executing unique_element_names_on_same_level check")
 
-    checker_data.result.register_checker(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=CHECKER_ID,
-        description="Element names at each level shall be unique at that level.",
-    )
-
-    rule_uid = checker_data.result.register_rule(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=CHECKER_ID,
-        emanating_entity="asam.net",
-        standard="xosc",
-        definition_setting=MIN_RULE_VERSION,
-        rule_full_name="reference_control.unique_element_names_on_same_level",
-    )
-
-    if not checker_data.result.all_checkers_completed_without_issue(
-        reference_checker_precondition.PRECONDITIONS
-    ):
-        checker_data.result.set_checker_status(
-            checker_bundle_name=constants.BUNDLE_NAME,
-            checker_id=CHECKER_ID,
-            status=StatusType.SKIPPED,
-        )
-
-        return
-
-    schema_version = checker_data.schema_version
-    if (
-        schema_version is None
-        or utils.compare_versions(schema_version, MIN_RULE_VERSION) < 0
-    ):
-        checker_data.result.set_checker_status(
-            checker_bundle_name=constants.BUNDLE_NAME,
-            checker_id=CHECKER_ID,
-            status=StatusType.SKIPPED,
-        )
-
-        return
-
     tree = checker_data.input_file_xml_root
     duplicates_found = are_names_unique_at_each_level(tree, tree.getroot())
 
@@ -127,7 +90,7 @@ def check_rule(checker_data: models.CheckerData) -> None:
             checker_id=CHECKER_ID,
             description="Issue flagging when a element name is not unique within its level",
             level=IssueSeverity.ERROR,
-            rule_uid=rule_uid,
+            rule_uid=RULE_UID,
         )
         issue_description = f"Element {duplicate.name} is duplicated"
         checker_data.result.add_xml_location(
@@ -137,9 +100,3 @@ def check_rule(checker_data: models.CheckerData) -> None:
             xpath=duplicate.xpath,
             description=issue_description,
         )
-
-    checker_data.result.set_checker_status(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=CHECKER_ID,
-        status=StatusType.COMPLETED,
-    )

@@ -1,8 +1,8 @@
 import logging
-from lxml import etree
-from qc_baselib import IssueSeverity, Result, StatusType
+from qc_baselib import IssueSeverity
 
 from qc_openscenario import constants
+from qc_openscenario.checks import models
 
 from qc_openscenario.checks.basic_checker import (
     valid_xml_document,
@@ -10,10 +10,15 @@ from qc_openscenario.checks.basic_checker import (
 )
 
 CHECKER_ID = "check_asam_xosc_xml_fileheader_is_present"
-PRECONDITIONS = {valid_xml_document.CHECKER_ID, root_tag_is_openscenario.CHECKER_ID}
+CHECKER_DESCRIPTION = "Below the root element a tag with FileHeader must be defined."
+CHECKER_PRECONDITIONS = {
+    valid_xml_document.CHECKER_ID,
+    root_tag_is_openscenario.CHECKER_ID,
+}
+RULE_UID = "asam.net:xosc:1.0.0:xml.fileheader_is_present"
 
 
-def check_rule(tree: etree._ElementTree, result: Result) -> None:
+def check_rule(checker_data: models.CheckerData) -> None:
     """
     Below the root element a tag with FileHeader must be defined.
 
@@ -22,31 +27,7 @@ def check_rule(tree: etree._ElementTree, result: Result) -> None:
     """
     logging.info("Executing fileheader_is_present check")
 
-    result.register_checker(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=CHECKER_ID,
-        description="Below the root element a tag with FileHeader must be defined.",
-    )
-
-    rule_uid = result.register_rule(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=CHECKER_ID,
-        emanating_entity="asam.net",
-        standard="xosc",
-        definition_setting="1.0.0",
-        rule_full_name="xml.fileheader_is_present",
-    )
-
-    if not result.all_checkers_completed_without_issue(PRECONDITIONS):
-        result.set_checker_status(
-            checker_bundle_name=constants.BUNDLE_NAME,
-            checker_id=CHECKER_ID,
-            status=StatusType.SKIPPED,
-        )
-
-        return
-
-    root = tree.getroot()
+    root = checker_data.input_file_xml_root.getroot()
 
     is_valid = False
     # Check if root contains a tag 'FileHeader'
@@ -60,24 +41,18 @@ def check_rule(tree: etree._ElementTree, result: Result) -> None:
 
     if not is_valid:
 
-        issue_id = result.register_issue(
+        issue_id = checker_data.result.register_issue(
             checker_bundle_name=constants.BUNDLE_NAME,
             checker_id=CHECKER_ID,
             description="Issue flagging when no FileHeader is found under root element",
             level=IssueSeverity.ERROR,
-            rule_uid=rule_uid,
+            rule_uid=RULE_UID,
         )
 
-        result.add_xml_location(
+        checker_data.result.add_xml_location(
             checker_bundle_name=constants.BUNDLE_NAME,
             checker_id=CHECKER_ID,
             issue_id=issue_id,
-            xpath=tree.getpath(root),
+            xpath=checker_data.input_file_xml_root.getpath(root),
             description=f'No child element "FileHeader"',
         )
-
-    result.set_checker_status(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=CHECKER_ID,
-        status=StatusType.COMPLETED,
-    )
