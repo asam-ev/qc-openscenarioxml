@@ -74,7 +74,11 @@ def check_rule(checker_data: models.CheckerData) -> None:
 
             return
 
-        current_numeric_value = float(current_duration)
+        current_numeric_value = utils.to_float(current_duration)
+
+        if current_numeric_value is None:
+            continue
+
         has_issue = current_numeric_value < 0
 
         if has_issue:
