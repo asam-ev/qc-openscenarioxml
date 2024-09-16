@@ -8,10 +8,11 @@ from qc_baselib import Configuration, Result
 
 @dataclass
 class CheckerData:
-    input_file_xml_root: etree._ElementTree
+    xml_file_path: str
+    input_file_xml_root: Union[None, etree._ElementTree]
     config: Configuration
     result: Result
-    schema_version: str
+    schema_version: Union[None, str]
     xodr_root: Union[None, etree._ElementTree]
 
 

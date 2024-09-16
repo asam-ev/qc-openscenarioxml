@@ -1,6 +1,6 @@
 # asam-qc-openscenarioxml
 
-This project implements the [ASAM OpenScenario XML Checker](checker_bundle_doc.md).
+This project implements the [ASAM OpenScenario XML Checker Bundle](checker_bundle_doc.md).
 
 - [asam-qc-openscenarioxml](#asam-qc-openscenarioxml)
   - [Installation and usage](#installation-and-usage)
@@ -27,8 +27,11 @@ asam-qc-openscenarioxml can be installed using pip.
 pip install asam-qc-openscenarioxml@git+https://github.com/asam-ev/qc-openscenarioxml@main
 ```
 
-**Note**: To install from different sources, you can replace `@main` with
-your desired target. For example, `develop` branch as `@develop`.
+**Note:** The above command will install `asam-qc-openscenarioxml` from the `main` branch. If you want to install `asam-qc-openscenarioxml` from another branch or tag, replace `@main` with the desired branch or tag. It is also possible to install from a local directory.
+
+```bash
+pip install /home/user/qc-openscenarioxml
+```
 
 To run the application:
 
