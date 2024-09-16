@@ -4,15 +4,17 @@ from typing import List
 
 from lxml import etree
 
-from qc_baselib import IssueSeverity, StatusType
+from qc_baselib import IssueSeverity
 
 from qc_openscenario import constants
-from qc_openscenario.checks import utils, models
-from qc_openscenario.checks.reference_checker import reference_checker_precondition
+from qc_openscenario.checks import models
+from qc_openscenario import basic_preconditions
 
 
 CHECKER_ID = "check_asam_xosc_reference_control_uniquely_resolvable_entity_references"
-MIN_RULE_VERSION = "1.2.0"
+CHECKER_DESCRIPTION = "Reference names must be unique"
+CHECKER_PRECONDITIONS = basic_preconditions.CHECKER_PRECONDITIONS
+RULE_UID = "asam.net:xosc:1.2.0:reference_control.uniquely_resolvable_entity_references"
 
 
 def get_catalogs(root: etree._ElementTree) -> List[etree._ElementTree]:
@@ -36,45 +38,6 @@ def check_rule(checker_data: models.CheckerData) -> None:
         - https://github.com/asam-ev/qc-openscenarioxml/issues/8
     """
     logging.info("Executing uniquely_resolvable_entity_references check")
-
-    checker_data.result.register_checker(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=CHECKER_ID,
-        description="Input xml file must be valid according to the schema.",
-    )
-
-    rule_uid = checker_data.result.register_rule(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=CHECKER_ID,
-        emanating_entity="asam.net",
-        standard="xosc",
-        definition_setting=MIN_RULE_VERSION,
-        rule_full_name="reference_control.uniquely_resolvable_entity_references",
-    )
-
-    if not checker_data.result.all_checkers_completed_without_issue(
-        reference_checker_precondition.PRECONDITIONS
-    ):
-        checker_data.result.set_checker_status(
-            checker_bundle_name=constants.BUNDLE_NAME,
-            checker_id=CHECKER_ID,
-            status=StatusType.SKIPPED,
-        )
-
-        return
-
-    schema_version = checker_data.schema_version
-    if (
-        schema_version is None
-        or utils.compare_versions(schema_version, MIN_RULE_VERSION) < 0
-    ):
-        checker_data.result.set_checker_status(
-            checker_bundle_name=constants.BUNDLE_NAME,
-            checker_id=CHECKER_ID,
-            status=StatusType.SKIPPED,
-        )
-
-        return
 
     root = checker_data.input_file_xml_root
 
@@ -113,7 +76,7 @@ def check_rule(checker_data: models.CheckerData) -> None:
             checker_id=CHECKER_ID,
             description="Referenced names are not unique",
             level=IssueSeverity.WARNING,
-            rule_uid=rule_uid,
+            rule_uid=RULE_UID,
         )
 
         for error in errors:
@@ -130,9 +93,3 @@ def check_rule(checker_data: models.CheckerData) -> None:
                 xpath=error_duplicate_xpath,
                 description=error_msg,
             )
-
-    checker_data.result.set_checker_status(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=CHECKER_ID,
-        status=StatusType.COMPLETED,
-    )

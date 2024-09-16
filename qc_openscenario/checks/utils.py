@@ -10,6 +10,13 @@ EXPRESSION_PATTERN = re.compile(r"[$][{][ A-Za-z0-9_\+\-\*/%$\(\)\.,]*[\}]")
 PARAMETER_PATTERN = re.compile(r"[$][A-Za-z_][A-Za-z0-9_]*")
 
 
+def to_float(s):
+    try:
+        return float(s)
+    except (ValueError, TypeError):
+        return None
+
+
 def get_root_without_default_namespace(path: str) -> etree._ElementTree:
     with open(path, "rb") as raw_file:
         xml_string = raw_file.read().decode()

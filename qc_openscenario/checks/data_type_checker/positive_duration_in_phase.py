@@ -5,10 +5,12 @@ from qc_baselib import IssueSeverity, StatusType
 from qc_openscenario import constants
 from qc_openscenario.checks import utils, models
 
-from qc_openscenario.checks.data_type_checker import data_type_checker_precondition
+from qc_openscenario import basic_preconditions
 
 CHECKER_ID = "check_asam_xosc_positive_duration_in_phase"
-MIN_RULE_VERSION = "1.2.0"
+CHECKER_DESCRIPTION = "Expressions in OpenSCENARIO must only use the allowed operands."
+CHECKER_PRECONDITIONS = basic_preconditions.CHECKER_PRECONDITIONS
+RULE_UID = "asam.net:xosc:1.2.0:data_type.positive_duration_in_phase"
 
 
 def check_rule(checker_data: models.CheckerData) -> None:
@@ -27,45 +29,6 @@ def check_rule(checker_data: models.CheckerData) -> None:
         - https://github.com/asam-ev/qc-openscenarioxml/issues/33
     """
     logging.info("Executing positive_duration_in_phase check")
-
-    checker_data.result.register_checker(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=CHECKER_ID,
-        description="Expressions in OpenSCENARIO must only use the allowed operands.",
-    )
-
-    rule_uid = checker_data.result.register_rule(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=CHECKER_ID,
-        emanating_entity="asam.net",
-        standard="xosc",
-        definition_setting=MIN_RULE_VERSION,
-        rule_full_name="data_type.positive_duration_in_phase",
-    )
-
-    if not checker_data.result.all_checkers_completed_without_issue(
-        data_type_checker_precondition.PRECONDITIONS
-    ):
-        checker_data.result.set_checker_status(
-            checker_bundle_name=constants.BUNDLE_NAME,
-            checker_id=CHECKER_ID,
-            status=StatusType.SKIPPED,
-        )
-
-        return
-
-    schema_version = checker_data.schema_version
-    if (
-        schema_version is None
-        or utils.compare_versions(schema_version, MIN_RULE_VERSION) < 0
-    ):
-        checker_data.result.set_checker_status(
-            checker_bundle_name=constants.BUNDLE_NAME,
-            checker_id=CHECKER_ID,
-            status=StatusType.SKIPPED,
-        )
-
-        return
 
     root = checker_data.input_file_xml_root
 
@@ -111,7 +74,11 @@ def check_rule(checker_data: models.CheckerData) -> None:
 
             return
 
-        current_numeric_value = float(current_duration)
+        current_numeric_value = utils.to_float(current_duration)
+
+        if current_numeric_value is None:
+            continue
+
         has_issue = current_numeric_value < 0
 
         if has_issue:
@@ -122,7 +89,7 @@ def check_rule(checker_data: models.CheckerData) -> None:
                 checker_id=CHECKER_ID,
                 description="Issue flagging when attribute “duration” in the complex type “Phase” is negative",
                 level=IssueSeverity.ERROR,
-                rule_uid=rule_uid,
+                rule_uid=RULE_UID,
             )
             checker_data.result.add_xml_location(
                 checker_bundle_name=constants.BUNDLE_NAME,
@@ -131,9 +98,3 @@ def check_rule(checker_data: models.CheckerData) -> None:
                 xpath=xpath,
                 description=f"Phase duration {current_numeric_value} is negative",
             )
-
-    checker_data.result.set_checker_status(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=CHECKER_ID,
-        status=StatusType.COMPLETED,
-    )

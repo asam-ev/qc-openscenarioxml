@@ -6,10 +6,12 @@ from qc_baselib import IssueSeverity, StatusType
 from qc_openscenario import constants
 from qc_openscenario.checks import utils, models
 
-from qc_openscenario.checks.parameters_checker import parameter_checker_precondition
+from qc_openscenario import basic_preconditions
 
 CHECKER_ID = "check_asam_xosc_parameters_valid_parameter_declaration_in_catalogs"
-MIN_RULE_VERSION = "1.2.0"
+CHECKER_DESCRIPTION = "All parameters used within a catalog shall be declared within their ParameterDeclaration in the same catalog, which sets a default value for each parameter."
+CHECKER_PRECONDITIONS = basic_preconditions.CHECKER_PRECONDITIONS
+RULE_UID = "asam.net:xosc:1.2.0:parameters.valid_parameter_declaration_in_catalogs"
 
 
 def check_rule(checker_data: models.CheckerData) -> None:
@@ -29,45 +31,6 @@ def check_rule(checker_data: models.CheckerData) -> None:
         - https://github.com/asam-ev/qc-openscenarioxml/issues/16
     """
     logging.info("Executing valid_parameter_declaration_in_catalogs check")
-
-    checker_data.result.register_checker(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=CHECKER_ID,
-        description="All parameters used within a catalog shall be declared within their ParameterDeclaration in the same catalog, which sets a default value for each parameter.",
-    )
-
-    rule_uid = checker_data.result.register_rule(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=CHECKER_ID,
-        emanating_entity="asam.net",
-        standard="xosc",
-        definition_setting=MIN_RULE_VERSION,
-        rule_full_name="parameters.valid_parameter_declaration_in_catalogs",
-    )
-
-    if not checker_data.result.all_checkers_completed_without_issue(
-        parameter_checker_precondition.PRECONDITIONS
-    ):
-        checker_data.result.set_checker_status(
-            checker_bundle_name=constants.BUNDLE_NAME,
-            checker_id=CHECKER_ID,
-            status=StatusType.SKIPPED,
-        )
-
-        return
-
-    schema_version = checker_data.schema_version
-    if (
-        schema_version is None
-        or utils.compare_versions(schema_version, MIN_RULE_VERSION) < 0
-    ):
-        checker_data.result.set_checker_status(
-            checker_bundle_name=constants.BUNDLE_NAME,
-            checker_id=CHECKER_ID,
-            status=StatusType.SKIPPED,
-        )
-
-        return
 
     root = checker_data.input_file_xml_root
 
@@ -129,7 +92,7 @@ def check_rule(checker_data: models.CheckerData) -> None:
                         checker_id=CHECKER_ID,
                         description="Issue flagging when used parameters is not defined or has not default value within a catalog",
                         level=IssueSeverity.ERROR,
-                        rule_uid=rule_uid,
+                        rule_uid=RULE_UID,
                     )
                     checker_data.result.add_xml_location(
                         checker_bundle_name=constants.BUNDLE_NAME,
@@ -138,9 +101,3 @@ def check_rule(checker_data: models.CheckerData) -> None:
                         xpath=xpath,
                         description=f"Parameter value {attr_value[1:]} for attribute {attr_name} is not defined in Catalog or has no default value",
                     )
-
-    checker_data.result.set_checker_status(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=CHECKER_ID,
-        status=StatusType.COMPLETED,
-    )

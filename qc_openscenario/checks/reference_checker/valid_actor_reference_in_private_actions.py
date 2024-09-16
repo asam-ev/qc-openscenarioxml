@@ -4,14 +4,18 @@ import logging
 from qc_baselib import IssueSeverity, StatusType
 
 from qc_openscenario import constants
-from qc_openscenario.checks import utils, models
+from qc_openscenario.checks import models
 
-from qc_openscenario.checks.reference_checker import reference_checker_precondition
+from qc_openscenario import basic_preconditions
 
 CHECKER_ID = (
     "check_asam_xosc_reference_control_valid_actor_reference_in_private_actions"
 )
-MIN_RULE_VERSION = "1.2.0"
+CHECKER_DESCRIPTION = "In a ManeuverGroup, if the defined action is a private action an actor must be defined."
+CHECKER_PRECONDITIONS = basic_preconditions.CHECKER_PRECONDITIONS
+RULE_UID = (
+    "asam.net:xosc:1.2.0:reference_control.valid_actor_reference_in_private_actions"
+)
 
 
 def check_rule(checker_data: models.CheckerData) -> None:
@@ -31,45 +35,6 @@ def check_rule(checker_data: models.CheckerData) -> None:
         - https://github.com/asam-ev/qc-openscenarioxml/issues/17
     """
     logging.info("Executing valid_actor_reference_in_private_actions check")
-
-    checker_data.result.register_checker(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=CHECKER_ID,
-        description="In a ManeuverGroup, if the defined action is a private action an actor must be defined.",
-    )
-
-    rule_uid = checker_data.result.register_rule(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=CHECKER_ID,
-        emanating_entity="asam.net",
-        standard="xosc",
-        definition_setting=MIN_RULE_VERSION,
-        rule_full_name="reference_control.valid_actor_reference_in_private_actions",
-    )
-
-    if not checker_data.result.all_checkers_completed_without_issue(
-        reference_checker_precondition.PRECONDITIONS
-    ):
-        checker_data.result.set_checker_status(
-            checker_bundle_name=constants.BUNDLE_NAME,
-            checker_id=CHECKER_ID,
-            status=StatusType.SKIPPED,
-        )
-
-        return
-
-    schema_version = checker_data.schema_version
-    if (
-        schema_version is None
-        or utils.compare_versions(schema_version, MIN_RULE_VERSION) < 0
-    ):
-        checker_data.result.set_checker_status(
-            checker_bundle_name=constants.BUNDLE_NAME,
-            checker_id=CHECKER_ID,
-            status=StatusType.SKIPPED,
-        )
-
-        return
 
     root = checker_data.input_file_xml_root
 
@@ -114,7 +79,7 @@ def check_rule(checker_data: models.CheckerData) -> None:
                 checker_id=CHECKER_ID,
                 description="Issue flagging when no Actor is specified but a PrivateAction is used",
                 level=IssueSeverity.ERROR,
-                rule_uid=rule_uid,
+                rule_uid=RULE_UID,
             )
             private_actions_xpaths = [root.getpath(x) for x in private_actions]
             checker_data.result.add_xml_location(
@@ -124,9 +89,3 @@ def check_rule(checker_data: models.CheckerData) -> None:
                 xpath=xpath,
                 description=f"ManeuverGroup at {xpath} uses private actions {private_actions_xpaths} but it defines no actor",
             )
-
-    checker_data.result.set_checker_status(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=CHECKER_ID,
-        status=StatusType.COMPLETED,
-    )
