@@ -40,13 +40,16 @@ def check_rule(checker_data: models.CheckerData) -> None:
 
     maneuver_groups = root.findall(".//ManeuverGroup")
     if maneuver_groups is None:
-        logging.error(
-            "Cannot find ManeuverGroup node in provided XOSC file. Skipping check"
-        )
         checker_data.result.set_checker_status(
             checker_bundle_name=constants.BUNDLE_NAME,
             checker_id=CHECKER_ID,
             status=StatusType.SKIPPED,
+        )
+
+        checker_data.result.add_checker_summary(
+            constants.BUNDLE_NAME,
+            CHECKER_ID,
+            "Cannot find ManeuverGroup node. Skip the check.",
         )
         return
 
@@ -56,15 +59,18 @@ def check_rule(checker_data: models.CheckerData) -> None:
         entity_refs = maneuver_group.findall(".//EntityRef")
 
         if private_actions is None or entity_refs is None:
-            logging.error(
-                "Cannot find PrivateAction or EntityRef node in provided XOSC file. Skipping check"
-            )
-
             checker_data.result.set_checker_status(
                 checker_bundle_name=constants.BUNDLE_NAME,
                 checker_id=CHECKER_ID,
                 status=StatusType.SKIPPED,
             )
+
+            checker_data.result.add_checker_summary(
+                constants.BUNDLE_NAME,
+                CHECKER_ID,
+                "Cannot find PrivateAction or EntityRef node. Skip the check.",
+            )
+
             return
 
         has_private_action = len(private_actions) > 0

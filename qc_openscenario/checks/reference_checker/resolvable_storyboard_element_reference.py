@@ -39,27 +39,34 @@ def check_rule(checker_data: models.CheckerData) -> None:
 
     storyboard_node = root.find("Storyboard")
     if storyboard_node is None:
-        logging.error(
-            "Cannot find Storyboard node in provided XOSC file. Skipping check"
-        )
         checker_data.result.set_checker_status(
             checker_bundle_name=constants.BUNDLE_NAME,
             checker_id=CHECKER_ID,
             status=StatusType.SKIPPED,
+        )
+
+        checker_data.result.add_checker_summary(
+            constants.BUNDLE_NAME,
+            CHECKER_ID,
+            "Cannot find Storyboard node in the provided XOSC file. Skip the check.",
         )
         return
 
     xpath_expr = "|".join([f"//{node}" for node in STORYBOARD_ELEMENTS])
     storyboard_elements = storyboard_node.xpath(xpath_expr)
     if storyboard_elements is None:
-        logging.error(
-            "Cannot find Storyboard elements node in provided XOSC file. Skipping check"
-        )
         checker_data.result.set_checker_status(
             checker_bundle_name=constants.BUNDLE_NAME,
             checker_id=CHECKER_ID,
             status=StatusType.SKIPPED,
         )
+
+        checker_data.result.add_checker_summary(
+            constants.BUNDLE_NAME,
+            CHECKER_ID,
+            "Cannot find Storyboard elements node in the provided XOSC file. Skip the check.",
+        )
+
         return
 
     storyboard_element_type = {}
