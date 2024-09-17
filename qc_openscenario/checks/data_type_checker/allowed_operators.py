@@ -150,7 +150,7 @@ def check_rule(checker_data: models.CheckerData) -> None:
                 issue_id = checker_data.result.register_issue(
                     checker_bundle_name=constants.BUNDLE_NAME,
                     checker_id=CHECKER_ID,
-                    description="Issue flagging invalid operand is used within expression",
+                    description="Invalid operand used within expression",
                     level=IssueSeverity.ERROR,
                     rule_uid=RULE_UID,
                 )

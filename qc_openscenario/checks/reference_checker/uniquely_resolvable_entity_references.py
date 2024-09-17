@@ -74,7 +74,7 @@ def check_rule(checker_data: models.CheckerData) -> None:
         issue_id = checker_data.result.register_issue(
             checker_bundle_name=constants.BUNDLE_NAME,
             checker_id=CHECKER_ID,
-            description="Referenced names are not unique",
+            description="Referenced entity name duplicated",
             level=IssueSeverity.WARNING,
             rule_uid=RULE_UID,
         )
