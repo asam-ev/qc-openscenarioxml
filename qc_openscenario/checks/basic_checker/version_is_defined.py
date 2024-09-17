@@ -73,7 +73,7 @@ def check_rule(checker_data: models.CheckerData) -> None:
         issue_id = checker_data.result.register_issue(
             checker_bundle_name=constants.BUNDLE_NAME,
             checker_id=CHECKER_ID,
-            description="Issue flagging when revMajor revMinor attribute of FileHeader are missing or invalid",
+            description="Version attributes revMajor-revMinor missing or invalid",
             level=IssueSeverity.ERROR,
             rule_uid=RULE_UID,
         )

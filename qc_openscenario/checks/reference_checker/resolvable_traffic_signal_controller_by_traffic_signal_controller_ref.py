@@ -75,7 +75,7 @@ def check_rule(checker_data: models.CheckerData) -> None:
             issue_id = checker_data.result.register_issue(
                 checker_bundle_name=constants.BUNDLE_NAME,
                 checker_id=CHECKER_ID,
-                description="Issue flagging traffic signal controller reference not present in the declared RoadNetwork",
+                description="Traffic signal controller referred but not present in the declared RoadNetwork",
                 level=IssueSeverity.ERROR,
                 rule_uid=RULE_UID,
             )
