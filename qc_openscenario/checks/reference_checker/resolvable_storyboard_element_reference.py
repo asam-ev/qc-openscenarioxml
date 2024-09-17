@@ -126,7 +126,7 @@ def check_rule(checker_data: models.CheckerData) -> None:
             issue_id = checker_data.result.register_issue(
                 checker_bundle_name=constants.BUNDLE_NAME,
                 checker_id=CHECKER_ID,
-                description="Issue flagging when a storyboardElementRef does not point to an existing element",
+                description="Reference in a storyboardElementRef does not point to an existing element",
                 level=IssueSeverity.ERROR,
                 rule_uid=RULE_UID,
             )
