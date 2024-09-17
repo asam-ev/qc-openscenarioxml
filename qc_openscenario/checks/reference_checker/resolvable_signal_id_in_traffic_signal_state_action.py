@@ -32,23 +32,35 @@ def check_rule(checker_data: models.CheckerData) -> None:
     root = checker_data.input_file_xml_root
 
     if checker_data.xodr_root is None:
-        logging.error(f" - Cannot read xodr file. Abort")
         checker_data.result.set_checker_status(
             checker_bundle_name=constants.BUNDLE_NAME,
             checker_id=CHECKER_ID,
             status=StatusType.SKIPPED,
         )
+
+        checker_data.result.add_checker_summary(
+            constants.BUNDLE_NAME,
+            CHECKER_ID,
+            "Cannot read xodr file. Skip the check.",
+        )
+
         return
 
     xodr_signal_list = checker_data.xodr_root.findall(".//signal")
 
     if xodr_signal_list is None:
-        logging.error(f" - Cannot read signals from xodr file. Abort")
         checker_data.result.set_checker_status(
             checker_bundle_name=constants.BUNDLE_NAME,
             checker_id=CHECKER_ID,
             status=StatusType.SKIPPED,
         )
+
+        checker_data.result.add_checker_summary(
+            constants.BUNDLE_NAME,
+            CHECKER_ID,
+            "Cannot read signals from xodr file. Skip the check.",
+        )
+
         return
 
     xodr_signal_ids = set()

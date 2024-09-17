@@ -44,6 +44,12 @@ def check_rule(checker_data: models.CheckerData) -> None:
             status=StatusType.SKIPPED,
         )
 
+        checker_data.result.add_checker_summary(
+            constants.BUNDLE_NAME,
+            CHECKER_ID,
+            "Cannot find Catalog nodes in provided XOSC file. Skip the check.",
+        )
+
         return
 
     logging.debug(f"catalogs_node : {catalogs_node}")
