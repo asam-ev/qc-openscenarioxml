@@ -62,14 +62,16 @@ def check_rule(checker_data: models.CheckerData) -> None:
             current_duration = current_duration_param_value
 
         if not utils.is_xsd_double(current_duration):
-            logging.error(
-                f"Cannot convert '{current_duration}' to double as it does not match xsd:double pattern. Skipping check..."
-            )
-
             checker_data.result.set_checker_status(
                 checker_bundle_name=constants.BUNDLE_NAME,
                 checker_id=CHECKER_ID,
                 status=StatusType.SKIPPED,
+            )
+
+            checker_data.result.add_checker_summary(
+                constants.BUNDLE_NAME,
+                CHECKER_ID,
+                f"Cannot convert '{current_duration}' to double as it does not match xsd:double pattern. Skip the check.",
             )
 
             return

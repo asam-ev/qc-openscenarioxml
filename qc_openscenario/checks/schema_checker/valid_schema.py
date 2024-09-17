@@ -68,14 +68,16 @@ def check_rule(checker_data: models.CheckerData) -> None:
     xsd_file = schema_files.SCHEMA_FILES.get(schema_version)
 
     if xsd_file is None:
-        logging.info(
-            f"- Schema file for version {schema_version} does not exist. Skipping check"
-        )
-
         checker_data.result.set_checker_status(
             checker_bundle_name=constants.BUNDLE_NAME,
             checker_id=CHECKER_ID,
             status=StatusType.SKIPPED,
+        )
+
+        checker_data.result.add_checker_summary(
+            constants.BUNDLE_NAME,
+            CHECKER_ID,
+            f"- Schema file for version {schema_version} does not exist. Skip the check.",
         )
 
         return

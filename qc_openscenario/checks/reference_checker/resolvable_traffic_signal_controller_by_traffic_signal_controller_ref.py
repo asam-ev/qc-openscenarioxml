@@ -36,27 +36,35 @@ def check_rule(checker_data: models.CheckerData) -> None:
 
     road_network = root.find("RoadNetwork")
     if road_network is None:
-        logging.error(
-            "Cannot find RoadNetwork node in provided XOSC file. Skipping check"
-        )
         checker_data.result.set_checker_status(
             checker_bundle_name=constants.BUNDLE_NAME,
             checker_id=CHECKER_ID,
             status=StatusType.SKIPPED,
         )
+
+        checker_data.result.add_checker_summary(
+            constants.BUNDLE_NAME,
+            CHECKER_ID,
+            "Cannot find RoadNetwork node. Skip the check.",
+        )
+
         return
 
     # ts = traffic signal
     ts_controllers = road_network.findall(".//TrafficSignalController")
     if ts_controllers is None:
-        logging.error(
-            "Cannot find TrafficSignalController nodes in RoadNetwork of provided XOSC file. Skipping check"
-        )
         checker_data.result.set_checker_status(
             checker_bundle_name=constants.BUNDLE_NAME,
             checker_id=CHECKER_ID,
             status=StatusType.SKIPPED,
         )
+
+        checker_data.result.add_checker_summary(
+            constants.BUNDLE_NAME,
+            CHECKER_ID,
+            "Cannot find TrafficSignalController nodes in RoadNetwork. Skip the check.",
+        )
+
         return
 
     ts_controller_names = set()
