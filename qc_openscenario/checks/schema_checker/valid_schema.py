@@ -17,12 +17,14 @@ from qc_openscenario.checks.basic_checker import (
 )
 
 CHECKER_ID = "check_asam_xosc_xml_valid_schema"
-PRECONDITIONS = {
+CHECKER_DESCRIPTION = "Input xml file must be valid according to the schema."
+CHECKER_PRECONDITIONS = {
     valid_xml_document.CHECKER_ID,
     root_tag_is_openscenario.CHECKER_ID,
     fileheader_is_present.CHECKER_ID,
     version_is_defined.CHECKER_ID,
 }
+RULE_UID = "asam.net:xosc:1.0.0:xml.valid_schema"
 
 
 def _is_schema_compliant(
@@ -62,45 +64,24 @@ def check_rule(checker_data: models.CheckerData) -> None:
     """
     logging.info("Executing valid_schema check")
 
-    checker_data.result.register_checker(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=CHECKER_ID,
-        description="Input xml file must be valid according to the schema.",
-    )
-
-    rule_uid = checker_data.result.register_rule(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=CHECKER_ID,
-        emanating_entity="asam.net",
-        standard="xosc",
-        definition_setting="1.0.0",
-        rule_full_name="xml.valid_schema",
-    )
-
-    if not checker_data.result.all_checkers_completed_without_issue(PRECONDITIONS):
-        checker_data.result.set_checker_status(
-            checker_bundle_name=constants.BUNDLE_NAME,
-            checker_id=CHECKER_ID,
-            status=StatusType.SKIPPED,
-        )
-
-        return
-
     schema_version = checker_data.schema_version
-    if schema_version is None or schema_version not in schema_files.SCHEMA_FILES:
-        logging.info(
-            f"- Schema file for version {schema_version} does not exist. Skipping check"
-        )
+    xsd_file = schema_files.SCHEMA_FILES.get(schema_version)
 
+    if xsd_file is None:
         checker_data.result.set_checker_status(
             checker_bundle_name=constants.BUNDLE_NAME,
             checker_id=CHECKER_ID,
             status=StatusType.SKIPPED,
         )
 
+        checker_data.result.add_checker_summary(
+            constants.BUNDLE_NAME,
+            CHECKER_ID,
+            f"- Schema file for version {schema_version} does not exist. Skip the check.",
+        )
+
         return
 
-    xsd_file = schema_files.SCHEMA_FILES[schema_version]
     xsd_file_path = str(
         importlib.resources.files("qc_openscenario.schema").joinpath(xsd_file)
     )
@@ -116,7 +97,7 @@ def check_rule(checker_data: models.CheckerData) -> None:
                 checker_id=CHECKER_ID,
                 description="Input file does not follow its version schema",
                 level=IssueSeverity.ERROR,
-                rule_uid=rule_uid,
+                rule_uid=RULE_UID,
             )
             checker_data.result.add_file_location(
                 checker_bundle_name=constants.BUNDLE_NAME,
@@ -126,9 +107,3 @@ def check_rule(checker_data: models.CheckerData) -> None:
                 column=error.column,
                 description=error.message,
             )
-
-    checker_data.result.set_checker_status(
-        checker_bundle_name=constants.BUNDLE_NAME,
-        checker_id=CHECKER_ID,
-        status=StatusType.COMPLETED,
-    )

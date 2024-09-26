@@ -1,3 +1,4 @@
+
 # Checker bundle: xoscBundle
 
 * Build version:  0.1.0
@@ -41,7 +42,7 @@
 
 ### check_asam_xosc_reference_control_uniquely_resolvable_entity_references
 
-* Description: Input xml file must be valid according to the schema.
+* Description: Reference names must be unique
 * Addressed rules:
   * asam.net:xosc:1.2.0:reference_control.uniquely_resolvable_entity_references
 
