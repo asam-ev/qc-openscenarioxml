@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "asam-qc-openscenarioxml"
-version = "0.1.0"
+version = "1.0.0rc1"
 description = "This project implements the OpenScenario Checker for the ASAM Quality Checker project."
 authors = ["Danilo Romano <danilo@ivex.ai>"]
 license = "MPL-2.0"
