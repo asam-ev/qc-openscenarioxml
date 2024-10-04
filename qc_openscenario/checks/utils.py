@@ -17,7 +17,10 @@ def to_float(s):
         return None
 
 
-def get_root_without_default_namespace(path: str) -> etree._ElementTree:
+def get_root_without_default_namespace(path: str) -> Union[None, etree._ElementTree]:
+    if not os.path.exists(path):
+        return None
+
     with open(path, "rb") as raw_file:
         xml_string = raw_file.read().decode()
 
