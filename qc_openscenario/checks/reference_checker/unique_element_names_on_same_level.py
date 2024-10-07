@@ -1,14 +1,14 @@
 import logging
 
 from dataclasses import dataclass
-from typing import Union
+from typing import Optional
 
 from lxml import etree
 
-from qc_baselib import IssueSeverity, StatusType
+from qc_baselib import IssueSeverity
 
 from qc_openscenario import constants
-from qc_openscenario.checks import utils, models
+from qc_openscenario.checks import models
 
 from qc_openscenario import basic_preconditions
 from collections import deque, defaultdict
@@ -22,7 +22,7 @@ RULE_UID = "asam.net:xosc:1.2.0:reference_control.unique_element_names_on_same_l
 @dataclass
 class QueueNode:
     element: etree._ElementTree
-    parent_xpath: Union[str, None]
+    parent_xpath: Optional[str]
 
 
 @dataclass
