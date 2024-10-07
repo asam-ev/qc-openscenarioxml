@@ -234,7 +234,6 @@ def main():
         result = Result()
         result.register_checker_bundle(
             name=constants.BUNDLE_NAME,
-            build_date=datetime.today().strftime("%Y-%m-%d"),
             description="OpenScenario checker bundle",
             version=constants.BUNDLE_VERSION,
             summary="",

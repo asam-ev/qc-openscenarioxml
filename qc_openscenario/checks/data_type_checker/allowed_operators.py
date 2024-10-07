@@ -1,7 +1,7 @@
 import logging
 
 from dataclasses import dataclass
-from typing import Union
+from typing import Union, Optional
 
 from lxml import etree
 
@@ -47,7 +47,7 @@ class ExpressionMember(enum.IntEnum):
 @dataclass
 class QueueNode:
     element: etree._ElementTree
-    xpath: Union[str, None]
+    xpath: Optional[str]
 
 
 @dataclass
