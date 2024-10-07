@@ -1,6 +1,6 @@
 from lxml import etree
 from io import BytesIO
-from typing import Union
+from typing import Union, Optional
 from qc_openscenario.checks import models
 import re
 import logging
@@ -17,7 +17,7 @@ def to_float(s):
         return None
 
 
-def get_root_without_default_namespace(path: str) -> Union[None, etree._ElementTree]:
+def get_root_without_default_namespace(path: str) -> Optional[etree._ElementTree]:
     if not os.path.exists(path):
         return None
 
@@ -30,7 +30,7 @@ def get_root_without_default_namespace(path: str) -> Union[None, etree._ElementT
         return etree.parse(BytesIO(xml_string.encode()))
 
 
-def get_standard_schema_version(root: etree._ElementTree) -> Union[str, None]:
+def get_standard_schema_version(root: etree._ElementTree) -> Optional[str]:
     header = root.find("FileHeader")
     if header is None:
         return None
@@ -107,15 +107,15 @@ def get_parameter_value_from_node(
 
 def get_xodr_road_network(
     input_file_path: str, tree: etree._ElementTree
-) -> Union[etree._ElementTree, None]:
+) -> Optional[etree._ElementTree]:
     """Get parsed xodr tree indicated in the RoadNetwork/LogicFile node of the input tree
 
     Args:
         tree (etree._ElementTree): xml document tree that refers to a xodr file
 
     Returns:
-        Union[etree._ElementTree, None]: the parsed road network tree.
-                                         None if the specified nodes in the root or the road network file are not found
+        Optional[etree._ElementTree]: the parsed road network tree.
+                                      None if the specified nodes in the root or the road network file are not found
     """
 
     road_network = tree.find("RoadNetwork")
