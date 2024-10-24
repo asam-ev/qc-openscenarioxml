@@ -2,6 +2,8 @@
 
 This project implements the [ASAM OpenScenario XML Checker Bundle](checker_bundle_doc.md).
 
+**Disclaimer**: The current version is a release candidate. The first official release is expected to be in November.
+
 - [asam-qc-openscenarioxml](#asam-qc-openscenarioxml)
   - [Installation and usage](#installation-and-usage)
     - [Installation using pip](#installation-using-pip)
@@ -23,11 +25,21 @@ asam-qc-openscenarioxml can be installed using pip or from source.
 
 asam-qc-openscenarioxml can be installed using pip.
 
+**From PyPi**
+
+```bash
+pip install asam-qc-openscenarioxml
+```
+
+**From GitHub repository**
+
 ```bash
 pip install asam-qc-openscenarioxml@git+https://github.com/asam-ev/qc-openscenarioxml@main
 ```
 
-**Note:** The above command will install `asam-qc-openscenarioxml` from the `main` branch. If you want to install `asam-qc-openscenarioxml` from another branch or tag, replace `@main` with the desired branch or tag. It is also possible to install from a local directory.
+The above command will install `asam-qc-openscenarioxml` from the `main` branch. If you want to install `asam-qc-openscenarioxml` from another branch or tag, replace `@main` with the desired branch or tag.
+
+**From a local repository**
 
 ```bash
 pip install /home/user/qc-openscenarioxml
@@ -208,3 +220,34 @@ You need to have pre-commit installed and install the hooks:
 ```
 pre-commit install
 ```
+
+**To implement a new checker**
+
+1. Create a new Python module for each checker.
+2. Specify the following global variables for the Python module
+
+| Variable | Meaning |
+| --- | --- |
+| `CHECKER_ID` | The ID of the checker |
+| `CHECKER_DESCRIPTION` | The description of the checker |
+| `CHECKER_PRECONDITIONS` | A set of other checkers in which if any of them raise an issue, the current checker will be skipped |
+| `RULE_UID` | The rule UID of the rule that the checker will check |
+
+3. Implement the checker logic in the following function:
+
+```python
+def check_rule(checker_data: models.CheckerData) -> None:
+    pass
+```
+
+1. Register the checker module in the following function in [main.py](qc_openscenario/main.py).
+
+```python
+def run_checks(config: Configuration, result: Result) -> None:
+    ...
+    # Add the following line to register your checker module
+    execute_checker(your_checker_module, checker_data)
+    ...
+```
+
+All the checkers in this checker bundle are implemented in this way. Take a look at some of them before implementing your first checker.
