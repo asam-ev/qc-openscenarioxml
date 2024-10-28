@@ -1,3 +1,9 @@
+# SPDX-License-Identifier: MPL-2.0
+# Copyright 2024, ASAM e.V.
+# This Source Code Form is subject to the terms of the Mozilla
+# Public License, v. 2.0. If a copy of the MPL was not distributed
+# with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
 import logging
 
 
@@ -55,7 +61,6 @@ def check_rule(checker_data: models.CheckerData) -> None:
     logging.debug(f"catalogs_node : {catalogs_node}")
 
     for catalog_node in catalogs_node:
-
         parameter_declaration_nodes = catalog_node.find(".//ParameterDeclarations")
         logging.debug(f"parameter_declaration_nodes : {parameter_declaration_nodes}")
         # Get parameters declarations and check if they have default value
@@ -92,7 +97,6 @@ def check_rule(checker_data: models.CheckerData) -> None:
                     == models.AttributeType.PARAMETER
                     and attr_value[1:] not in defined_parameters_with_default
                 ):
-
                     issue_id = checker_data.result.register_issue(
                         checker_bundle_name=constants.BUNDLE_NAME,
                         checker_id=CHECKER_ID,
