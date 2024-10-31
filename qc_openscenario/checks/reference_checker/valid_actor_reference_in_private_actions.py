@@ -1,3 +1,9 @@
+# SPDX-License-Identifier: MPL-2.0
+# Copyright 2024, ASAM e.V.
+# This Source Code Form is subject to the terms of the Mozilla
+# Public License, v. 2.0. If a copy of the MPL was not distributed
+# with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
 import logging
 
 
@@ -54,7 +60,6 @@ def check_rule(checker_data: models.CheckerData) -> None:
         return
 
     for maneuver_group in maneuver_groups:
-
         private_actions = maneuver_group.findall(".//PrivateAction")
         entity_refs = maneuver_group.findall(".//EntityRef")
 
