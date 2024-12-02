@@ -2,8 +2,6 @@
 
 This project implements the [ASAM OpenScenario XML Checker Bundle](checker_bundle_doc.md).
 
-**Disclaimer**: The current version is a release candidate. The first official release is expected to be in November.
-
 - [asam-qc-openscenarioxml](#asam-qc-openscenarioxml)
   - [Installation and usage](#installation-and-usage)
     - [Installation using pip](#installation-using-pip)
