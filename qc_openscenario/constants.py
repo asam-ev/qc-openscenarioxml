@@ -5,4 +5,4 @@
 # with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 BUNDLE_NAME = "xoscBundle"
-BUNDLE_VERSION = "v1.0.0-rc.1"
+BUNDLE_VERSION = "v1.0.0"
